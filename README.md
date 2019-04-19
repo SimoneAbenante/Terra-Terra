@@ -1,3 +1,3 @@
-# Terra-Terra
+# Terra&Terra
 ...
 Esercitazione Progetto Terra&Terra
