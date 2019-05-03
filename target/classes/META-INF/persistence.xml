@@ -4,7 +4,7 @@
 		<class>dao.Bill</class>
 		<class>dao.Dish</class>
 		<class>dao.Job</class>
-		<class>dao.Table</class>
+		<class>dao.DiningTable</class>
 		<properties>
 			<property name="javax.persistence.jdbc.driver" value="C:\Users\draze\.m2\repository\mysql\mysql-connector-java\8.0.15\mysql-connector-java-8.0.15.jar"/>
 			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/terra&amp;terra"/>

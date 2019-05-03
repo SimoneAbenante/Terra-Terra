@@ -1,8 +1,13 @@
 package rep;
 
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
-import dao.Table;
+import org.springframework.stereotype.Repository;
 
-public interface TableRepository extends CrudRepository<Table, Integer> {
+import dao.DiningTable;
 
+@Repository
+public interface TableRepository extends CrudRepository<DiningTable, Integer>{
+	List<DiningTable> findAll();
 }

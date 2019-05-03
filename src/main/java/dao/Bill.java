@@ -2,6 +2,7 @@ package dao;
 
 import java.io.Serializable;
 import javax.persistence.*;
+
 import java.util.List;
 
 
@@ -15,10 +16,13 @@ public class Bill implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Integer id;
 
-	private double total;
+	@Column(name="payment_method")
+	private String paymentMethod;
+	
+	private Double total;
 
 	//bi-directional many-to-one association to Job
 	@OneToMany(mappedBy="bill")
@@ -27,19 +31,27 @@ public class Bill implements Serializable {
 	public Bill() {
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public double getTotal() {
+	public String getPaymentMethod() {
+		return this.paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+
+	public Double getTotal() {
 		return this.total;
 	}
 
-	public void setTotal(double total) {
+	public void setTotal(Double total) {
 		this.total = total;
 	}
 

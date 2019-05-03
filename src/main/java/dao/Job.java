@@ -14,25 +14,25 @@ public class Job implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int id;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Integer id;
 
-	private byte done;
+	private Byte done;
 
 	//bi-directional many-to-one association to Bill
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name="id_bill")
 	private Bill bill;
 
-	//bi-directional many-to-one association to Dish
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="`id-dish`")
-	private Dish dish;
-
-	//bi-directional many-to-one association to Table
-	@ManyToOne(fetch=FetchType.LAZY)
+	//bi-directional many-to-one association to DiningTable
+	@ManyToOne
 	@JoinColumn(name="id_table")
-	private Table table;
+	private DiningTable diningTable;
+
+	//bi-directional many-to-one association to Dish
+	@ManyToOne
+	@JoinColumn(name="id_dish")
+	private Dish dish;
 
 	public Job() {
 	}
@@ -41,7 +41,7 @@ public class Job implements Serializable {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -49,7 +49,7 @@ public class Job implements Serializable {
 		return this.done;
 	}
 
-	public void setDone(byte done) {
+	public void setDone(Byte done) {
 		this.done = done;
 	}
 
@@ -61,20 +61,20 @@ public class Job implements Serializable {
 		this.bill = bill;
 	}
 
+	public DiningTable getDiningTable() {
+		return this.diningTable;
+	}
+
+	public void setDiningTable(DiningTable diningTable) {
+		this.diningTable = diningTable;
+	}
+
 	public Dish getDish() {
 		return this.dish;
 	}
 
 	public void setDish(Dish dish) {
 		this.dish = dish;
-	}
-
-	public Table getTable() {
-		return this.table;
-	}
-
-	public void setTable(Table table) {
-		this.table = table;
 	}
 
 }

@@ -1,13 +1,38 @@
 package dto;
 
-public class BillDto {
- 
-	private int id;
-	private double total;
+import dto.inter.InterfaceDto;
 
-	public BillDto(int id, double total) {
-		this.id = id;
+public class BillDto implements InterfaceDto {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7160787167155766721L;
+	private int id;
+	private String paymentMethod;
+	private double total;
+	
+	public BillDto() {
+		super();
+	}
+	
+	public BillDto(String paymentMethod, double total) {
+		this.paymentMethod = paymentMethod;
 		this.total = total;
+	}
+
+	public BillDto(int id, String paymentMethod, double total) {
+		this.id = id;
+		this.paymentMethod = paymentMethod;
+		this.total = total;
+	}
+
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
 	}
 
 	public int getId() {
