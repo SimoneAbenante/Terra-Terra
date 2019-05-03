@@ -9,23 +9,23 @@ public class JobDto implements InterfaceDto {
 	 * 
 	 */
 	private static final long serialVersionUID = 2951026190344300972L;
-	private int id;
+	private Integer id;
 	private BillDto bill;
 	private TableDto table;
 	private DishDto dish;
-	private boolean done;
+	private Boolean done;
 
 	public JobDto() {
 	}
 	
-	public JobDto(BillDto bill, TableDto table, DishDto dish, boolean done) {
+	public JobDto(BillDto bill, TableDto table, DishDto dish, Boolean done) {
 		this.bill = bill;
 		this.table = table;
 		this.dish = dish;
 		this.done = done;
 	}
 
-	public JobDto(int id, BillDto bill, TableDto table, DishDto dish, boolean done) {
+	public JobDto(Integer id, BillDto bill, TableDto table, DishDto dish, Boolean done) {
 		this.id = id;
 		this.bill = bill;
 		this.table = table;
@@ -33,11 +33,11 @@ public class JobDto implements InterfaceDto {
 		this.done = done;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

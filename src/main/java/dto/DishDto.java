@@ -8,25 +8,25 @@ public class DishDto implements InterfaceDto {
 	 * 
 	 */
 	private static final long serialVersionUID = -9062991264193651582L;
-	private int id;
+	private Integer id;
 	private String name;
-	private double price;
+	private Double price;
 	
 	public DishDto() {
 	}
 	
-	public DishDto(String name, double price) {
+	public DishDto(String name, Double price) {
 		this.name = name;
 		this.price = price;
 	}
 
-	public DishDto(int id, String name, double price) {
+	public DishDto(Integer id, String name, Double price) {
 		this.id = id;
 		this.name = name;
 		this.price = price;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -42,7 +42,7 @@ public class DishDto implements InterfaceDto {
 		this.name = name;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return price;
 	}
 

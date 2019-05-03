@@ -8,20 +8,20 @@ public class BillDto implements InterfaceDto {
 	 * 
 	 */
 	private static final long serialVersionUID = 7160787167155766721L;
-	private int id;
+	private Integer id;
 	private String paymentMethod;
-	private double total;
+	private Double total;
 	
 	public BillDto() {
 		super();
 	}
 	
-	public BillDto(String paymentMethod, double total) {
+	public BillDto(String paymentMethod, Double total) {
 		this.paymentMethod = paymentMethod;
 		this.total = total;
 	}
 
-	public BillDto(int id, String paymentMethod, double total) {
+	public BillDto(int id, String paymentMethod, Double total) {
 		this.id = id;
 		this.paymentMethod = paymentMethod;
 		this.total = total;
@@ -35,7 +35,7 @@ public class BillDto implements InterfaceDto {
 		this.paymentMethod = paymentMethod;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
@@ -43,7 +43,7 @@ public class BillDto implements InterfaceDto {
 		this.id = id;
 	}
 
-	public double getTotal() {
+	public Double getTotal() {
 		return total;
 	}
 

@@ -8,34 +8,34 @@ public class TableDto implements InterfaceDto {
 	 * 
 	 */
 	private static final long serialVersionUID = -5201848931832508311L;
-	private int id;
-	private int size;
+	private Integer id;
+	private Integer size;
 	
 	public TableDto() {
 	}
 	
-	public TableDto(int size) {
+	public TableDto(Integer size) {
 		this.size = size;
 	}
 	
-	public TableDto(int id, int size) {
+	public TableDto(Integer id, Integer size) {
 		this.id = id;
 		this.size = size;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public int getSize() {
+	public Integer getSize() {
 		return size;
 	}
 
-	public void setSize(int size) {
+	public void setSize(Integer size) {
 		this.size = size;
 	}
 }

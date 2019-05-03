@@ -29,7 +29,7 @@ public class Dish implements Serializable {
 	public Dish() {
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
@@ -45,7 +45,7 @@ public class Dish implements Serializable {
 		this.name = name;
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		return this.price;
 	}
 
