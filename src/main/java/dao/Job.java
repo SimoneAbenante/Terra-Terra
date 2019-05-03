@@ -1,7 +1,8 @@
 package dao;
 
-import java.io.Serializable;
 import javax.persistence.*;
+
+import dao.inter.InterfaceDao;
 
 
 /**
@@ -10,7 +11,7 @@ import javax.persistence.*;
  */
 @Entity
 @NamedQuery(name="Job.findAll", query="SELECT j FROM Job j")
-public class Job implements Serializable {
+public class Job implements InterfaceDao {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -37,7 +38,7 @@ public class Job implements Serializable {
 	public Job() {
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
@@ -45,7 +46,7 @@ public class Job implements Serializable {
 		this.id = id;
 	}
 
-	public byte getDone() {
+	public Byte getDone() {
 		return this.done;
 	}
 

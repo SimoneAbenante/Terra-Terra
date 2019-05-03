@@ -1,7 +1,9 @@
 package dao;
 
-import java.io.Serializable;
 import javax.persistence.*;
+
+import dao.inter.InterfaceDao;
+
 import java.util.List;
 
 
@@ -11,7 +13,7 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Dish.findAll", query="SELECT d FROM Dish d")
-public class Dish implements Serializable {
+public class Dish implements InterfaceDao {
 	private static final long serialVersionUID = 1L;
 
 	@Id

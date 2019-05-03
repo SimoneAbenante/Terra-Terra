@@ -1,7 +1,9 @@
 package dao;
 
-import java.io.Serializable;
 import javax.persistence.*;
+
+import dao.inter.InterfaceDao;
+
 import java.util.List;
 
 
@@ -12,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name="dining_table")
 @NamedQuery(name="DiningTable.findAll", query="SELECT d FROM DiningTable d")
-public class DiningTable implements Serializable {
+public class DiningTable implements InterfaceDao {
 	private static final long serialVersionUID = 1L;
 
 	@Id

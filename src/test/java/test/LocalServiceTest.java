@@ -12,6 +12,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import dao.*;
 import dto.*;
 import rep.BillRepository;
+import rep.DishRepository;
+import rep.JobRepository;
+import rep.TableRepository;
 import service.LocalService;
 import service.enu.LocalEnum;
 
@@ -20,7 +23,6 @@ public class LocalServiceTest {
 	
 
 	LocalService localservice;
-	@Autowired
 	
 	@Before
 	public void init() {
@@ -29,6 +31,12 @@ public class LocalServiceTest {
 	
 	@MockBean
     public BillRepository billRepository;
+	@MockBean
+    public DishRepository dishRepository;
+	@MockBean
+    public TableRepository tableRepository;
+	@MockBean
+    public JobRepository jobRepository;
 
 	@Test
 	public void saveTableToDB() {

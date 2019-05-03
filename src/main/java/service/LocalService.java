@@ -2,7 +2,6 @@ package service;
 
 import static dto.JobDto.*;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dao.*;
+import dao.inter.InterfaceDao;
 import dto.*;
 import dto.inter.InterfaceDto;
 import rep.*;
@@ -108,49 +108,59 @@ public class LocalService {
 		return test;
 	}
 
-	public Serializable saveDto(InterfaceDto dto, LocalEnum local) {
+	public InterfaceDao saveDto(InterfaceDto dto, LocalEnum local) {
 		switch (local) {
 		case BILL:
 			BillDto billDto = (BillDto) dto;
+
 			Bill bill = new Bill();
 			bill.setPaymentMethod(billDto.getPaymentMethod());
 			bill.setTotal(billDto.getTotal());
+
 			localBill.save(bill);
+
 			return bill;
 		case DISH:
 			DishDto dishDto = (DishDto) dto;
+
 			Dish dish = new Dish();
 			dish.setName(dishDto.getName());
 			dish.setPrice(dishDto.getPrice());
+
 			localDish.save(dish);
+
 			return dish;
 		case JOB:
 			JobDto jobDto = (JobDto) dto;
 			Job job = new Job();
-			
+
 			job.setBill(new Bill());
 			job.getBill().setId(jobDto.getBill().getId());
 			job.getBill().setPaymentMethod(jobDto.getBill().getPaymentMethod());
 			job.getBill().setTotal(jobDto.getBill().getTotal());
-			
+
 			job.setDiningTable(new DiningTable());
 			job.getDiningTable().setId(jobDto.getTable().getId());
 			job.getDiningTable().setSize(jobDto.getTable().getSize());
-			
+
 			job.setDish(new Dish());
 			job.getDish().setId(jobDto.getDish().getId());
 			job.getDish().setName(jobDto.getDish().getName());
 			job.getDish().setPrice(jobDto.getDish().getPrice());
-			
-			job.setDone((byte)0);
-			
+
+			job.setDone((byte) 0);
+
 			localJob.save(job);
+
 			return job;
 		case TABLE:
 			TableDto tableDto = (TableDto) dto;
+
 			DiningTable table = new DiningTable();
 			table.setSize(tableDto.getSize());
+
 			localTable.save(table);
+
 			return table;
 		default:
 			return null;
