@@ -1,6 +1,5 @@
 package dto;
 
-import dao.*;
 import dto.inter.InterfaceDto;
 
 public class JobDto implements InterfaceDto {
@@ -10,27 +9,16 @@ public class JobDto implements InterfaceDto {
 	 */
 	private static final long serialVersionUID = 2951026190344300972L;
 	private Integer id;
+
 	private BillDto bill;
-	private TableDto table;
+
+	private DiningTableDto diningTable;
+
 	private DishDto dish;
+
 	private Boolean done;
 
 	public JobDto() {
-	}
-	
-	public JobDto(BillDto bill, TableDto table, DishDto dish, Boolean done) {
-		this.bill = bill;
-		this.table = table;
-		this.dish = dish;
-		this.done = done;
-	}
-
-	public JobDto(Integer id, BillDto bill, TableDto table, DishDto dish, Boolean done) {
-		this.id = id;
-		this.bill = bill;
-		this.table = table;
-		this.dish = dish;
-		this.done = done;
 	}
 
 	public Integer getId() {
@@ -49,12 +37,12 @@ public class JobDto implements InterfaceDto {
 		this.bill = bill;
 	}
 
-	public TableDto getTable() {
-		return table;
+	public DiningTableDto getDiningTable() {
+		return diningTable;
 	}
 
-	public void setTable(TableDto table) {
-		this.table = table;
+	public void setDiningTable(DiningTableDto table) {
+		this.diningTable = table;
 	}
 
 	public DishDto getDish() {
@@ -65,28 +53,21 @@ public class JobDto implements InterfaceDto {
 		this.dish = dish;
 	}
 
-	public boolean isDone() {
+	public Boolean getDone() {
 		return done;
 	}
 
-	public void setDone(boolean done) {
+	public void setDone(Boolean done) {
 		this.done = done;
 	}
 
-	public static BillDto fromBilltoDto(Bill bill) {
-		return new BillDto(bill.getId(), bill.getPaymentMethod(), bill.getTotal());
+	public static boolean fromByteToBoolean(Byte b) {
+		return b > 0 ? true : false;
 	}
 	
-	public static DishDto fromDishToDto(Dish dish) {
-		return new DishDto(dish.getId(), dish.getName(), dish.getPrice());
-	}
-	
-	public static TableDto fromDiningTableToDto(DiningTable table) {
-		return new TableDto(table.getId(), table.getSize());
-	}
-	
-	public static boolean biteToBoolean(byte b) {
-		return b>0?true:false;
+	public static Byte fromBooleanToByte(Boolean b) {
+		if(b.booleanValue()) return 1;
+		else return 0;
 	}
 
 }

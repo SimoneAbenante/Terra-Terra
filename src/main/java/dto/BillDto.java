@@ -1,5 +1,6 @@
 package dto;
 
+import dao.Bill;
 import dto.inter.InterfaceDto;
 
 public class BillDto implements InterfaceDto {
@@ -14,17 +15,6 @@ public class BillDto implements InterfaceDto {
 	
 	public BillDto() {
 		super();
-	}
-	
-	public BillDto(String paymentMethod, Double total) {
-		this.paymentMethod = paymentMethod;
-		this.total = total;
-	}
-
-	public BillDto(int id, String paymentMethod, Double total) {
-		this.id = id;
-		this.paymentMethod = paymentMethod;
-		this.total = total;
 	}
 
 	public String getPaymentMethod() {
@@ -49,6 +39,22 @@ public class BillDto implements InterfaceDto {
 
 	public void setTotal(double total) {
 		this.total = total;
+	}
+	
+	public static Bill fromDtoToBill(BillDto billDto) {
+		Bill bill = new Bill();
+		bill.setId(billDto.getId());
+		bill.setPaymentMethod(billDto.getPaymentMethod());
+		bill.setTotal(billDto.getTotal());
+		return bill;
+	}
+	
+	public static BillDto fromBillToDto(Bill bill) {
+		BillDto billDto = new BillDto();
+		billDto.setId(bill.getId());
+		billDto.setPaymentMethod(bill.getPaymentMethod());
+		billDto.setTotal(bill.getTotal());
+		return billDto;
 	}
 
 }
