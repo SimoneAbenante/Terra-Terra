@@ -18,8 +18,8 @@ public class DishService {
 
 	public List<DishDto> getAllDishAsDtoList() {
 		List<DishDto> listDishDto = new ArrayList<>();
-		DishDto dishDto = new DishDto();
 		localDish.findAll().forEach(e -> {
+			DishDto dishDto = new DishDto();
 			dishDto.setId(e.getId());
 			dishDto.setName(e.getName());
 			dishDto.setPrice(e.getPrice());
@@ -54,4 +54,21 @@ public class DishService {
 		localDish.save(dish);
 		return dish;
 	}
+	
+	public static Dish fromDtoToDish(DishDto dishDto) {
+		Dish dish = new Dish();
+		dish.setId(dishDto.getId());
+		dish.setName(dishDto.getName());
+		dish.setPrice(dishDto.getPrice());
+		return dish;
+	}
+	
+	public static DishDto fromDishToDto(Dish dish) {
+		DishDto dishDto = new DishDto();
+		dishDto.setId(dish.getId());
+		dishDto.setName(dish.getName());
+		dishDto.setPrice(dish.getPrice());
+		return dishDto;
+	}
+	
 }

@@ -1,9 +1,6 @@
 package dao;
 
 import javax.persistence.*;
-
-import dao.inter.InterfaceDao;
-
 import java.util.List;
 
 
@@ -13,7 +10,7 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Bill.findAll", query="SELECT b FROM Bill b")
-public class Bill implements InterfaceDao {
+public class Bill implements dao.inter.InterfaceDao {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -22,7 +19,7 @@ public class Bill implements InterfaceDao {
 
 	@Column(name="payment_method")
 	private String paymentMethod;
-	
+
 	private Double total;
 
 	//bi-directional many-to-one association to Job

@@ -2,10 +2,6 @@ package dao;
 
 import javax.persistence.*;
 
-import dao.inter.InterfaceDao;
-
-import java.util.List;
-
 
 /**
  * The persistent class for the dining_table database table.
@@ -14,7 +10,7 @@ import java.util.List;
 @Entity
 @Table(name="dining_table")
 @NamedQuery(name="DiningTable.findAll", query="SELECT d FROM DiningTable d")
-public class DiningTable implements InterfaceDao {
+public class DiningTable implements dao.inter.InterfaceDao {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -22,10 +18,10 @@ public class DiningTable implements InterfaceDao {
 	private Integer id;
 
 	private Integer size;
-
-	//bi-directional many-to-one association to Job
-	@OneToMany(mappedBy="diningTable")
-	private List<Job> jobs;
+	
+	@ManyToOne
+	@JoinColumn(name="id_status")
+	private Status status;
 
 	public DiningTable() {
 	}
@@ -46,26 +42,12 @@ public class DiningTable implements InterfaceDao {
 		this.size = size;
 	}
 
-	public List<Job> getJobs() {
-		return this.jobs;
+	public Status getStatus() {
+		return status;
 	}
 
-	public void setJobs(List<Job> jobs) {
-		this.jobs = jobs;
-	}
-
-	public Job addJob(Job job) {
-		getJobs().add(job);
-		job.setDiningTable(this);
-
-		return job;
-	}
-
-	public Job removeJob(Job job) {
-		getJobs().remove(job);
-		job.setDiningTable(null);
-
-		return job;
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 }

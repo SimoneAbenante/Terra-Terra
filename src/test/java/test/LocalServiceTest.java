@@ -14,7 +14,7 @@ import dto.*;
 import rep.BillRepository;
 import rep.DishRepository;
 import rep.JobRepository;
-import rep.TableRepository;
+import rep.DiningTableRepository;
 import service.enu.LocalEnum;
 
 @RunWith(SpringRunner.class)

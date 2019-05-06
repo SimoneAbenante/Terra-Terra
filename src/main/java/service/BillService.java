@@ -18,8 +18,8 @@ public class BillService {
 
 	public List<BillDto> getAllBillAsDtoList() {
 		List<BillDto> listBillDto = new ArrayList<>();
-		BillDto billDto = new BillDto();
 		localBill.findAll().forEach(e -> {
+			BillDto billDto = new BillDto();
 			billDto.setId(e.getId());
 			billDto.setPaymentMethod(e.getPaymentMethod());
 			billDto.setTotal(e.getTotal());
@@ -53,6 +53,22 @@ public class BillService {
 		bill.setTotal(billDto.getTotal());
 		localBill.save(bill);
 		return bill;
+	}
+	
+	public static Bill fromDtoToBill(BillDto billDto) {
+		Bill bill = new Bill();
+		bill.setId(billDto.getId());
+		bill.setPaymentMethod(billDto.getPaymentMethod());
+		bill.setTotal(billDto.getTotal());
+		return bill;
+	}
+	
+	public static BillDto fromBillToDto(Bill bill) {
+		BillDto billDto = new BillDto();
+		billDto.setId(bill.getId());
+		billDto.setPaymentMethod(bill.getPaymentMethod());
+		billDto.setTotal(bill.getTotal());
+		return billDto;
 	}
 
 }

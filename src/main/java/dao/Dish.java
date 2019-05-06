@@ -1,9 +1,6 @@
 package dao;
 
 import javax.persistence.*;
-
-import dao.inter.InterfaceDao;
-
 import java.util.List;
 
 
@@ -13,7 +10,7 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Dish.findAll", query="SELECT d FROM Dish d")
-public class Dish implements InterfaceDao {
+public class Dish implements dao.inter.InterfaceDao {
 	private static final long serialVersionUID = 1L;
 
 	@Id

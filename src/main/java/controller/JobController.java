@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import dao.Job;
 import dto.JobDto;
 import service.JobService;
 
@@ -27,7 +27,7 @@ public class JobController {
 	}
 
 	@PostMapping(value = "/set", produces = "application/json")
-	public Job saveJob(@RequestBody Integer idBill, @RequestBody Integer idDiningTable, @RequestBody Integer idDish) {
+	public JobDto saveJobById(@RequestParam(required = false) Integer idBill, @RequestParam Integer idDiningTable, @RequestParam Integer idDish, @RequestParam(required = false) Integer idStatus) {
 		return jobService.saveJobById(idBill, idDiningTable, idDish);
 	}
 

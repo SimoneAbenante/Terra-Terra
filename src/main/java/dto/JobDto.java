@@ -8,17 +8,16 @@ public class JobDto implements InterfaceDto {
 	 * 
 	 */
 	private static final long serialVersionUID = 2951026190344300972L;
+	
 	private Integer id;
-
-	private BillDto bill;
-
-	private DiningTableDto diningTable;
-
-	private DishDto dish;
-
-	private Boolean done;
+	private Integer id_bill;
+	private Integer id_diningTable;
+	private Integer id_dish;
+	private Integer id_status;
 
 	public JobDto() {
+		super();
+		setId(0);
 	}
 
 	public Integer getId() {
@@ -29,45 +28,36 @@ public class JobDto implements InterfaceDto {
 		this.id = id;
 	}
 
-	public BillDto getBill() {
-		return bill;
+	public Integer getId_bill() {
+		return id_bill;
 	}
 
-	public void setBill(BillDto bill) {
-		this.bill = bill;
+	public void setId_bill(Integer id_bill) {
+		this.id_bill = id_bill;
 	}
 
-	public DiningTableDto getDiningTable() {
-		return diningTable;
+	public Integer getId_diningTable() {
+		return id_diningTable;
 	}
 
-	public void setDiningTable(DiningTableDto table) {
-		this.diningTable = table;
+	public void setId_diningTable(Integer id_table) {
+		this.id_diningTable = id_table;
 	}
 
-	public DishDto getDish() {
-		return dish;
+	public Integer getId_dish() {
+		return id_dish;
 	}
 
-	public void setDish(DishDto dish) {
-		this.dish = dish;
+	public void setId_dish(Integer id_dish) {
+		this.id_dish = id_dish;
 	}
 
-	public Boolean getDone() {
-		return done;
+	public Integer getId_status() {
+		return id_status;
 	}
 
-	public void setDone(Boolean done) {
-		this.done = done;
-	}
-
-	public static boolean fromByteToBoolean(Byte b) {
-		return b > 0 ? true : false;
-	}
-	
-	public static Byte fromBooleanToByte(Boolean b) {
-		if(b.booleanValue()) return 1;
-		else return 0;
+	public void setId_status(Integer id_status) {
+		this.id_status = id_status;
 	}
 
 }

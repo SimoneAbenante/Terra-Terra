@@ -1,6 +1,5 @@
 package dto;
 
-import dao.DiningTable;
 import dto.inter.InterfaceDto;
 
 public class DiningTableDto implements InterfaceDto {
@@ -11,8 +10,11 @@ public class DiningTableDto implements InterfaceDto {
 	private static final long serialVersionUID = -5201848931832508311L;
 	private Integer id;
 	private Integer size;
-	
+	private Integer status;
+
 	public DiningTableDto() {
+		super();
+		setId(0);
 	}
 	
 	public DiningTableDto(Integer size) {
@@ -35,18 +37,12 @@ public class DiningTableDto implements InterfaceDto {
 		this.size = size;
 	}
 	
-	public static DiningTable fromDtoToDiningTable(DiningTableDto diningTableDto) {
-		DiningTable table = new DiningTable();
-		table.setId(diningTableDto.getId());
-		table.setSize(diningTableDto.getSize());
-		return table;
+	public Integer getStatus() {
+		return status;
 	}
-	
-	public static DiningTableDto fromDiningTableToDto(DiningTable table) {
-		DiningTableDto diningTableDto = new DiningTableDto();
-		diningTableDto.setId(table.getId());
-		diningTableDto.setSize(table.getSize());
-		return diningTableDto;
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 	
 }
