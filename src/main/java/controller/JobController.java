@@ -27,7 +27,7 @@ public class JobController {
 	}
 
 	@PostMapping(value = "/set", produces = "application/json")
-	public JobDto saveJobById(@RequestParam(required = false) Integer idBill, @RequestParam Integer idDiningTable, @RequestParam Integer idDish, @RequestParam(required = false) Integer idStatus) {
+	public JobDto saveJobById(@RequestParam(required = false) Integer idBill, @RequestParam Integer idDiningTable, @RequestParam Integer idDish) {
 		return jobService.saveJobById(idBill, idDiningTable, idDish);
 	}
 
