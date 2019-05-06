@@ -13,17 +13,8 @@ public class DishDto implements InterfaceDto {
 	private Double price;
 	
 	public DishDto() {
-	}
-	
-	public DishDto(String name, Double price) {
-		this.name = name;
-		this.price = price;
-	}
-
-	public DishDto(Integer id, String name, Double price) {
-		this.id = id;
-		this.name = name;
-		this.price = price;
+		super();
+		setId(0);
 	}
 
 	public Integer getId() {
@@ -49,4 +40,5 @@ public class DishDto implements InterfaceDto {
 	public void setPrice(double price) {
 		this.price = price;
 	}
+	
 }

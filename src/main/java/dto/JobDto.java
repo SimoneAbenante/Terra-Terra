@@ -1,6 +1,5 @@
 package dto;
 
-import dao.*;
 import dto.inter.InterfaceDto;
 
 public class JobDto implements InterfaceDto {
@@ -9,28 +8,16 @@ public class JobDto implements InterfaceDto {
 	 * 
 	 */
 	private static final long serialVersionUID = 2951026190344300972L;
+	
 	private Integer id;
-	private BillDto bill;
-	private TableDto table;
-	private DishDto dish;
-	private Boolean done;
+	private Integer id_bill;
+	private Integer id_diningTable;
+	private Integer id_dish;
+	private Integer id_status;
 
 	public JobDto() {
-	}
-	
-	public JobDto(BillDto bill, TableDto table, DishDto dish, Boolean done) {
-		this.bill = bill;
-		this.table = table;
-		this.dish = dish;
-		this.done = done;
-	}
-
-	public JobDto(Integer id, BillDto bill, TableDto table, DishDto dish, Boolean done) {
-		this.id = id;
-		this.bill = bill;
-		this.table = table;
-		this.dish = dish;
-		this.done = done;
+		super();
+		setId(0);
 	}
 
 	public Integer getId() {
@@ -41,52 +28,36 @@ public class JobDto implements InterfaceDto {
 		this.id = id;
 	}
 
-	public BillDto getBill() {
-		return bill;
+	public Integer getId_bill() {
+		return id_bill;
 	}
 
-	public void setBill(BillDto bill) {
-		this.bill = bill;
+	public void setId_bill(Integer id_bill) {
+		this.id_bill = id_bill;
 	}
 
-	public TableDto getTable() {
-		return table;
+	public Integer getId_diningTable() {
+		return id_diningTable;
 	}
 
-	public void setTable(TableDto table) {
-		this.table = table;
+	public void setId_diningTable(Integer id_table) {
+		this.id_diningTable = id_table;
 	}
 
-	public DishDto getDish() {
-		return dish;
+	public Integer getId_dish() {
+		return id_dish;
 	}
 
-	public void setDish(DishDto dish) {
-		this.dish = dish;
+	public void setId_dish(Integer id_dish) {
+		this.id_dish = id_dish;
 	}
 
-	public boolean isDone() {
-		return done;
+	public Integer getId_status() {
+		return id_status;
 	}
 
-	public void setDone(boolean done) {
-		this.done = done;
-	}
-
-	public static BillDto fromBilltoDto(Bill bill) {
-		return new BillDto(bill.getId(), bill.getPaymentMethod(), bill.getTotal());
-	}
-	
-	public static DishDto fromDishToDto(Dish dish) {
-		return new DishDto(dish.getId(), dish.getName(), dish.getPrice());
-	}
-	
-	public static TableDto fromDiningTableToDto(DiningTable table) {
-		return new TableDto(table.getId(), table.getSize());
-	}
-	
-	public static boolean biteToBoolean(byte b) {
-		return b>0?true:false;
+	public void setId_status(Integer id_status) {
+		this.id_status = id_status;
 	}
 
 }

@@ -1,6 +1,5 @@
 package dao;
 
-import java.io.Serializable;
 import javax.persistence.*;
 
 
@@ -10,14 +9,12 @@ import javax.persistence.*;
  */
 @Entity
 @NamedQuery(name="Job.findAll", query="SELECT j FROM Job j")
-public class Job implements Serializable {
+public class Job implements dao.inter.InterfaceDao {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
-
-	private Byte done;
 
 	//bi-directional many-to-one association to Bill
 	@ManyToOne
@@ -34,23 +31,20 @@ public class Job implements Serializable {
 	@JoinColumn(name="id_dish")
 	private Dish dish;
 
+	//bi-directional many-to-one association to Status
+	@ManyToOne
+	@JoinColumn(name="id_status")
+	private Status status;
+
 	public Job() {
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return this.id;
 	}
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public byte getDone() {
-		return this.done;
-	}
-
-	public void setDone(Byte done) {
-		this.done = done;
 	}
 
 	public Bill getBill() {
@@ -75,6 +69,14 @@ public class Job implements Serializable {
 
 	public void setDish(Dish dish) {
 		this.dish = dish;
+	}
+
+	public Status getStatus() {
+		return this.status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 }

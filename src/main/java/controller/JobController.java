@@ -1,6 +1,5 @@
 package controller;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,33 +8,32 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dto.JobDto;
-import dto.inter.InterfaceDto;
-import service.LocalService;
-import service.enu.LocalEnum;
+import service.JobService;
 
 @RequestMapping("/job")
 @RestController
 public class JobController {
-	
+
 	@Autowired
-	public LocalService localService;
+	public JobService jobService;
 
 	@GetMapping(value = "/get", produces = "application/json")
-	public List<InterfaceDto> getAllJob() {
-		return localService.getAllDto(LocalEnum.JOB);
+	public List<JobDto> getAllJob() {
+		return jobService.getAllJobAsDtoList();
 	}
-	
+
 	@PostMapping(value = "/set", produces = "application/json")
-	public Serializable saveJob(@RequestBody JobDto dto) {
-		return localService.saveDto(dto, LocalEnum.JOB);
+	public JobDto saveJobById(@RequestParam(required = false) Integer idBill, @RequestParam Integer idDiningTable, @RequestParam Integer idDish) {
+		return jobService.saveJobById(idBill, idDiningTable, idDish);
 	}
-	
+
 	@DeleteMapping(value = "/delete", produces = "application/json")
 	public Boolean deleteJob(@RequestBody Integer id) {
-		return localService.deleteDto(id, LocalEnum.JOB);
+		return jobService.deleteJob(id);
 	}
-	
+
 }

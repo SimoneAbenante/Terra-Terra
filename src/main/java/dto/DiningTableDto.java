@@ -2,7 +2,7 @@ package dto;
 
 import dto.inter.InterfaceDto;
 
-public class TableDto implements InterfaceDto {
+public class DiningTableDto implements InterfaceDto {
  
 	/**
 	 * 
@@ -10,19 +10,17 @@ public class TableDto implements InterfaceDto {
 	private static final long serialVersionUID = -5201848931832508311L;
 	private Integer id;
 	private Integer size;
-	
-	public TableDto() {
-	}
-	
-	public TableDto(Integer size) {
-		this.size = size;
-	}
-	
-	public TableDto(Integer id, Integer size) {
-		this.id = id;
-		this.size = size;
-	}
+	private Integer status;
 
+	public DiningTableDto() {
+		super();
+		setId(0);
+	}
+	
+	public DiningTableDto(Integer size) {
+		this.size = size;
+	}
+	
 	public Integer getId() {
 		return id;
 	}
@@ -38,4 +36,13 @@ public class TableDto implements InterfaceDto {
 	public void setSize(Integer size) {
 		this.size = size;
 	}
+	
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+	
 }

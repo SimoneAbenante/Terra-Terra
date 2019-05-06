@@ -14,17 +14,7 @@ public class BillDto implements InterfaceDto {
 	
 	public BillDto() {
 		super();
-	}
-	
-	public BillDto(String paymentMethod, Double total) {
-		this.paymentMethod = paymentMethod;
-		this.total = total;
-	}
-
-	public BillDto(int id, String paymentMethod, Double total) {
-		this.id = id;
-		this.paymentMethod = paymentMethod;
-		this.total = total;
+		setId(0);
 	}
 
 	public String getPaymentMethod() {

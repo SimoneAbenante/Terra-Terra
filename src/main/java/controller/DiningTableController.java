@@ -1,6 +1,5 @@
 package controller;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,34 +8,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import dto.TableDto;
-import dto.inter.InterfaceDto;
-import service.LocalService;
-import service.enu.LocalEnum;
+import dao.DiningTable;
+import dto.DiningTableDto;
+import service.DiningTableService;
 
 
 @RequestMapping("/table")
 @RestController
-public class TableController {
+public class DiningTableController {
 	
 	@Autowired
-	public LocalService localService;
+	public DiningTableService diningTableService;
 	
 	@GetMapping(value = "/get", produces = "application/json")
-	public List<InterfaceDto> getAllTable() {
-		return localService.getAllDto(LocalEnum.TABLE);
+	public List<DiningTableDto> getAllDiningTable() {
+		return diningTableService.getAllDiningTableAsDtoList();
 	}
 	
 	@PostMapping(value = "/set", produces = "application/json")
-	public Serializable saveTable(@RequestBody TableDto dto) {
-		return localService.saveDto(dto, LocalEnum.TABLE);
+	public DiningTable saveDiningTable(@RequestBody DiningTableDto dto) {
+		return diningTableService.saveDiningTable(dto);
 	}
 	
 	@DeleteMapping(value = "/delete", produces = "application/json")
-	public Boolean deleteTable(@RequestBody Integer id) {
-		return localService.deleteDto(id, LocalEnum.TABLE);
+	public Boolean deleteDish(@RequestParam Integer id) {
+		return diningTableService.deleteDiningTable(id);
 	}
 
 }
