@@ -34,7 +34,7 @@ public class JobController {
 	
 	@GetMapping(value = "/getByIdBill", produces = "application/json")
 	public List<JobDto> getAllJobAsDtoListByBillId(@RequestParam Integer idBill) {
-		return jobService.getAllJobAsDtoList();
+		return jobService.getAllJobAsDtoListByBillId(idBill);
 	}
 
 	@PostMapping(value = "/set", produces = "application/json")

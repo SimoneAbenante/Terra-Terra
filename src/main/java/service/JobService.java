@@ -47,7 +47,7 @@ public class JobService {
 		return jobDto;
 	}
 
-	//Da controllare
+	// Da controllare
 	public List<JobDto> getAllJobAsDtoListByBillId(Integer idBill) {
 		List<JobDto> listJobDto = new ArrayList<>();
 		localJob.findAllByIdBill(idBill).forEach(e -> {
@@ -59,7 +59,7 @@ public class JobService {
 	public Boolean deleteJob(Integer idJob) {
 		Boolean test = false;
 		if (idJob != null && localJob.existsById(idJob)) {
-			//oggetti contenenti Integer id
+			// oggetti contenenti Integer id
 			ID idBill = new ID();
 			ID idTable = new ID();
 			localJob.findById(idJob).ifPresent(e -> {
@@ -93,8 +93,16 @@ public class JobService {
 
 	public List<JobDto> saveMultipleJobById(Integer idBill, Bill_Dishes list) {
 		List<JobDto> jobDtoList = new ArrayList<>();
+		ID id = new ID();
+		if (idBill != null)
+			id.setId(idBill);
+		Byte counter = 0;
 		for (Integer dish : list.getDishes()) {
-			jobDtoList.add(saveJobById(idBill, list.getIdDiningTable(), dish));
+			jobDtoList.add(saveJobById(id.getId(), list.getIdDiningTable(), dish));
+			if(counter==0) {
+				id.setId(jobDtoList.get(0).getId_bill());
+				counter++;
+			}
 		}
 		return jobDtoList;
 	}
@@ -115,11 +123,11 @@ public class JobService {
 		}
 		return test;
 	}
-	
+
 	// Da terminare
 	public Bill getBillContolled(Integer id) {
 		Bill bill = new Bill();
-		if (id == null | id < 0)
+		if (id == null)
 			id = 0;
 		if (billService.localBill.existsById(id))
 			billService.localBill.findById(id).ifPresent(e -> {
@@ -133,7 +141,7 @@ public class JobService {
 			billService.localBill.save(bill);
 		}
 		return bill;
-	} 
+	}
 
 	public static JobDto fromJobToJobDto(Job job) {
 		JobDto jobDto = new JobDto();
