@@ -11,37 +11,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import dao.DiningTable;
 import dao.Status;
-import dto.DiningTableDto;
-import service.DiningTableService;
+import dto.StatusDto;
+import service.StatusService;
 
-
-@RequestMapping("/table")
+@RequestMapping("/status")
 @RestController
-public class DiningTableController {
+public class StatusController {
 	
 	@Autowired
-	public DiningTableService diningTableService;
+	StatusService statusService;
 	
 	@GetMapping(value = "/get", produces = "application/json")
-	public List<DiningTableDto> getAllDiningTable() {
-		return diningTableService.getAllDiningTableAsDtoList();
+	public List<StatusDto> getAllJob() {
+		return statusService.getAllStatusAsDtoList();
+	}
+	
+	@GetMapping(value = "/getById", produces = "application/json")
+	public Status getStatusById(@RequestParam Integer id) {
+		return statusService.getStatusById(id);
 	}
 	
 	@PostMapping(value = "/set", produces = "application/json")
-	public DiningTable saveDiningTable(@RequestBody DiningTableDto dto) {
-		return diningTableService.saveDiningTable(dto);
+	public Status saveStatus(@RequestParam StatusDto statusDto) {
+		return statusService.saveStatus(statusDto);
 	}
 	
 	@DeleteMapping(value = "/delete", produces = "application/json")
-	public Boolean deleteDish(@RequestParam Integer id) {
-		return diningTableService.deleteDiningTable(id);
+	public Boolean deleteStatus(@RequestBody Integer id) {
+		return statusService.deleteStatus(id);
 	}
 	
-	@PostMapping(value = "/setstatus", produces = "application/json")
-	public Status setDiningTableStatus(@RequestParam Integer idTable, @RequestParam Integer idStatus) {
-		return diningTableService.setStatusOfDiningTable(idTable, idStatus); 
-	}
-
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dto.JobDto;
+import dto.Bill_Dishes;
 import service.JobService;
 
 @RequestMapping("/job")
@@ -25,10 +26,25 @@ public class JobController {
 	public List<JobDto> getAllJob() {
 		return jobService.getAllJobAsDtoList();
 	}
+	
+	@GetMapping(value = "/getById", produces = "application/json")
+	public JobDto getJobById(@RequestParam Integer id) {
+		return jobService.getJobAsDto(id);
+	}
+	
+	@GetMapping(value = "/getByIdBill", produces = "application/json")
+	public List<JobDto> getAllJobAsDtoListByBillId(@RequestParam Integer idBill) {
+		return jobService.getAllJobAsDtoListByBillId(idBill);
+	}
 
 	@PostMapping(value = "/set", produces = "application/json")
 	public JobDto saveJobById(@RequestParam(required = false) Integer idBill, @RequestParam Integer idDiningTable, @RequestParam Integer idDish) {
 		return jobService.saveJobById(idBill, idDiningTable, idDish);
+	}
+	
+	@PostMapping(value = "/setlist", produces = "application/json")
+	public List<JobDto> saveJobListById(@RequestParam(required = false) Integer idBill, @RequestBody Bill_Dishes jobDtoArray) {
+		return jobService.saveMultipleJobById(idBill, jobDtoArray);
 	}
 
 	@DeleteMapping(value = "/delete", produces = "application/json")

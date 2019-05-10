@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import dao.Bill;
 import dao.Job;
 import dto.JobDto;
+import dto.Bill_Dishes;
+import dto.ID;
 import rep.JobRepository;
 
 @Service
@@ -28,13 +30,7 @@ public class JobService {
 	public List<JobDto> getAllJobAsDtoList() {
 		List<JobDto> listJobDto = new ArrayList<>();
 		localJob.findAll().forEach(e -> {
-			JobDto jobDto = new JobDto();
-			jobDto.setId(e.getId());
-			jobDto.setId_bill(e.getBill().getId());
-			jobDto.setId_diningTable(e.getDiningTable().getId());
-			jobDto.setId_dish(e.getDish().getId());
-			jobDto.setId_status(e.getStatus().getId());
-			listJobDto.add(jobDto);
+			listJobDto.add(fromJobToJobDto(e));
 		});
 		return listJobDto;
 	}
@@ -51,12 +47,31 @@ public class JobService {
 		return jobDto;
 	}
 
-	public Boolean deleteJob(Integer id) {
+	// Da controllare
+	public List<JobDto> getAllJobAsDtoListByBillId(Integer idBill) {
+		List<JobDto> listJobDto = new ArrayList<>();
+		localJob.findAllByIdBill(idBill).forEach(e -> {
+			listJobDto.add(fromJobToJobDto(e));
+		});
+		return listJobDto;
+	}
+
+	public Boolean deleteJob(Integer idJob) {
 		Boolean test = false;
-		if (localJob.existsById(id)) {
-			// Subtract dish price to bill total
-			localJob.findById(id).ifPresent(e -> e.getBill().setTotal(e.getBill().getTotal() - e.getDish().getPrice()));
-			localJob.deleteById(id);
+		if (idJob != null && localJob.existsById(idJob)) {
+			// oggetti contenenti Integer id
+			ID idBill = new ID();
+			ID idTable = new ID();
+			localJob.findById(idJob).ifPresent(e -> {
+				// Sottrae valore del piatto al totale
+				e.getBill().setTotal(e.getBill().getTotal() - e.getDish().getPrice());
+				idBill.setId(e.getBill().getId());
+				idTable.setId(e.getDiningTable().getId());
+				localJob.delete(e);
+			});
+			// Se lista vuota togli prenotazione occupazione del tavolo
+			if (getAllJobAsDtoListByBillId(idBill.getId()).isEmpty())
+				diningTableService.setStatusOfDiningTable(idTable.getId(), 3);
 			test = true;
 		}
 		return test;
@@ -64,11 +79,58 @@ public class JobService {
 
 	public JobDto saveJobById(Integer idBill, Integer idTable, Integer idDish) {
 		Job job = new Job();
+		job.setBill(getBillContolled(idBill));
+		job.setDiningTable(diningTableService.getDiningTableById(idTable));
+		// Cambiare lo status del tavolo ad occupato
+		diningTableService.setStatusOfDiningTable(job.getDiningTable().getId(), 1);
+		job.setDish(dishService.getDishById(idDish));
+		// Aggiunge il valore del piatto al totale
+		job.getBill().setTotal(job.getBill().getTotal() + job.getDish().getPrice());
+		statusService.localStatus.findById(1).ifPresent(e -> job.setStatus(e));
+		localJob.save(job);
+		return fromJobToJobDto(job);
+	}
+
+	public List<JobDto> saveMultipleJobById(Integer idBill, Bill_Dishes list) {
+		List<JobDto> jobDtoList = new ArrayList<>();
+		ID id = new ID();
+		if (idBill != null)
+			id.setId(idBill);
+		Byte counter = 0;
+		for (Integer dish : list.getDishes()) {
+			jobDtoList.add(saveJobById(id.getId(), list.getIdDiningTable(), dish));
+			if(counter==0) {
+				id.setId(jobDtoList.get(0).getId_bill());
+				counter++;
+			}
+		}
+		return jobDtoList;
+	}
+
+	public Boolean setJobStatus(Integer idJob, Integer idStatus) {
+		Boolean test = false;
+		Job job = new Job();
+		if (idJob != null & idStatus != null & localJob.existsById(idJob)
+				& statusService.localStatus.existsById(idStatus)) {
+			localJob.findById(idJob).ifPresent(e -> {
+				statusService.localStatus.findById(idStatus).ifPresent(i -> job.setStatus(i));
+				job.setId(e.getId());
+				job.setBill(e.getBill());
+				job.setDiningTable(e.getDiningTable());
+				job.setDish(e.getDish());
+			});
+			localJob.save(job);
+		}
+		return test;
+	}
+
+	// Da terminare
+	public Bill getBillContolled(Integer id) {
 		Bill bill = new Bill();
-		if (idBill == null)
-			idBill = 0;
-		if (billService.localBill.existsById(idBill))
-			billService.localBill.findById(idBill).ifPresent(e -> {
+		if (id == null)
+			id = 0;
+		if (billService.localBill.existsById(id))
+			billService.localBill.findById(id).ifPresent(e -> {
 				bill.setId(e.getId());
 				bill.setPaymentMethod(e.getPaymentMethod());
 				bill.setTotal(e.getTotal());
@@ -76,42 +138,10 @@ public class JobService {
 		else {
 			bill.setPaymentMethod("Undefined");
 			bill.setTotal(0.0);
-			job.setBill(billService.localBill.save(bill));
+			billService.localBill.save(bill);
 		}
-		diningTableService.localTable.findById(idTable).ifPresent(e -> job.setDiningTable(e));
-		dishService.localDish.findById(idDish).ifPresent(e -> job.setDish(e));
-		// Add dish price to bill total
-		job.getBill().setTotal(job.getBill().getTotal() + job.getDish().getPrice());
-		statusService.localStatus.findById(3).ifPresent(e -> job.setStatus(e));
-		localJob.save(job);
-		return fromJobToJobDto(job);
+		return bill;
 	}
-
-//	public List<Job> saveMultipleJobById(Integer idBill, Integer[][] ListJob) {
-//		List<Job> jobList = new ArrayList<Job>();
-//		Bill bill = new Bill();
-//		if (idBill == null)
-//			idBill = 0;
-//		if (billService.localBill.existsById(idBill))
-//			billService.localBill.findById(idBill).ifPresent(e -> {
-//				bill.setId(e.getId());
-//				bill.setPaymentMethod(e.getPaymentMethod());
-//				bill.setTotal(e.getTotal());
-//			});
-//		else {
-//			bill.setPaymentMethod("Undefined");
-//			bill.setTotal(0.0);
-//			billService.localBill.save(bill);
-//		}
-//
-//		for (Integer[] list : ListJob) {
-//			Job job = new Job();
-//			
-//			jobList.add(job);
-//		}
-//
-//		return jobList;
-//	}
 
 	public static JobDto fromJobToJobDto(Job job) {
 		JobDto jobDto = new JobDto();
@@ -122,15 +152,5 @@ public class JobService {
 		jobDto.setId_status(job.getStatus().getId());
 		return jobDto;
 	}
-	
-//	public static Job fromJobDtoToJob(JobDto jobDto) {
-//		Job job = new Job();
-//		job.setId(jobDto.getId());
-//		job.setbill(job.getBill().getId());
-//		jobDto.setId_diningTable(job.getDiningTable().getId());
-//		jobDto.setId_dish(job.getDish().getId());
-//		jobDto.setId_status(job.getStatus().getId());
-//		return jobDto;
-//	}
 
 }
