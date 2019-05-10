@@ -17,7 +17,8 @@
 	<modules>
 		<!--  <module>terra-terra</module>-->
 		<module>../Terra&amp;Terra AngularJS</module>
-		<module>../Main</module>
+		<module>../Terra&amp;Terra API</module>
+		<module>../Eureka_Server</module>
 	</modules>
 	
 	<build>
