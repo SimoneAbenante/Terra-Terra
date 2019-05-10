@@ -57,7 +57,7 @@ angular.module('terra&terra')
 		};
 
 		self.delete = function () {
-			self.gridOptions.selection.clearSelectedRows();
+			$scope.gridApi.selection.clearSelectedRows();
 		};
 
 		self.gridOptions.onRegisterApi = function (gridApi) {

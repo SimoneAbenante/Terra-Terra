@@ -17,7 +17,7 @@
 	<modules>
 		<!--  <module>terra-terra</module>-->
 		<module>../Terra&amp;Terra AngularJS</module>
-		<module>../../Git/Terra-Terra</module>
+		<module>../Main</module>
 	</modules>
 	
 	<build>
