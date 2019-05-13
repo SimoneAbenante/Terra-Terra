@@ -2,31 +2,33 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com</groupId>
-	<artifactId>common</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
 	
-	  <parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.4.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
+	<parent>
+		<groupId>com</groupId>
+		<artifactId>Terra-Terra</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<modules>
-		<!--  <module>terra-terra</module>-->
-		<module>../Terra&amp;Terra AngularJS</module>
-		<module>../Terra&amp;Terra API</module>
-		<module>../Eureka_Server</module>
-	</modules>
+	<artifactId>Common</artifactId>
+	<name>Common</name>
+	<description>Common Files For Projects</description>
+
+	<dependencies>
+
+	</dependencies>
 	
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+
 </project>

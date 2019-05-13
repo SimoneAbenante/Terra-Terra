@@ -1,8 +1,8 @@
 package dto;
 
-import dao.inter.InterfaceDao;
+import dto.inter.InterfaceDto;
 
-public class StatusDto implements InterfaceDao {
+public class StatusDto implements InterfaceDto {
 	
 	/**
 	 * 
