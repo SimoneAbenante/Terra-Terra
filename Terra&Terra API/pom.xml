@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com</groupId>
+		<groupId>com.terra</groupId>
 		<artifactId>Terra-Terra</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
@@ -21,9 +21,10 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com</groupId>
+			<groupId>com.terra</groupId>
 			<artifactId>Common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
 		</dependency>
 
 		<dependency>

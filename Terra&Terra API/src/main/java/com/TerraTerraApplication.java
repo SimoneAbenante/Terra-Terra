@@ -28,7 +28,6 @@ public class TerraTerraApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(TerraTerraApplication.class, args);
-		//BillDto bill;
 	}
 
 	@Bean
