@@ -20,21 +20,21 @@ import service.BillService;
 public class BillController {
 	
 	@Autowired
-	public BillService billservice;
+	public BillService billService;
 
 	@GetMapping(value = "/get", produces = "application/json")
 	public List<BillDto> getAllBill() {
-		return billservice.getAllBillAsDtoList();
+		return billService.getAllBillAsDtoList();
 	}
 	
 	@PostMapping(value = "/set", produces = "application/json")
 	public Bill saveBill(@RequestBody BillDto dto) {
-		return billservice.saveBill(dto);
+		return billService.saveBill(dto);
 	}
 	
 	@DeleteMapping(value = "/delete", produces = "application/json")
 	public Boolean deleteBill(@RequestParam Integer id) {
-		return billservice.deleteBill(id);
+		return billService.deleteBill(id);
 	}
 	
 }

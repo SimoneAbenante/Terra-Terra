@@ -22,4 +22,12 @@
 		<module>Terra&amp;Terra AngularJS</module>
 	</modules>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-openfeign</artifactId>
+			<version>2.1.0.RELEASE</version>
+		</dependency>
+	</dependencies>
+
 </project>
