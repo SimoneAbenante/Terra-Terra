@@ -4,14 +4,15 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.terra</groupId>
-		<artifactId>Terra-Terra</artifactId>
+		<groupId>it.ttsolution.form.tt</groupId>
+		<artifactId>tt</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
-	<artifactId>Common</artifactId>
-	<name>Common</name>
+	<groupId>it.ttsolution.form.tt.common</groupId>
+	<artifactId>tt-common</artifactId>
+	<name>tt-common</name>
 	<description>Common Files For Projects</description>
 
 	<dependencies>
