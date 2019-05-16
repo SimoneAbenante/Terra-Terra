@@ -22,8 +22,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.terra</groupId>
-			<artifactId>Common</artifactId>
+			<groupId>it.ttsolution.form.tt.common</groupId>
+			<artifactId>tt-common</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
