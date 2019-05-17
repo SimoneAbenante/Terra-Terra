@@ -23,7 +23,7 @@ public class DishController {
 	@Autowired
 	public DishService dishService;
 
-	@GetMapping(value = "/", produces = "application/json")
+	@GetMapping(value = "", produces = "application/json")
 	public List<DishDto> getAllDish() {
 		return dishService.getAllDishAsDtoList();
 	}
