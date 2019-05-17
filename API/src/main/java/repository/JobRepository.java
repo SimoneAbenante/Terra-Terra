@@ -10,7 +10,6 @@ import dao.Job;
 
 @Repository
 public interface JobRepository extends CrudRepository<Job, Integer>{
-	
 	List<Job> findAll();
 	
 	@Query("SELECT j FROM Job j WHERE j.bill.id = ?1")
