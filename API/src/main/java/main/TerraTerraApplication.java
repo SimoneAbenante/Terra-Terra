@@ -19,8 +19,8 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
-@ComponentScan({ "controller", "dao", "dto", "rep", "service", "feign" })
-@EnableJpaRepositories(basePackages = { "rep" })
+@ComponentScan({ "controller", "dao", "dto", "repository", "service", "feign" })
+@EnableJpaRepositories(basePackages = { "repository" })
 @EntityScan(basePackages = { "dao" })
 @EnableSwagger2
 @EnableDiscoveryClient

@@ -1,13 +1,13 @@
 'use strict';
 
 angular.module('terra&terra')
-	.controller('waiterController', ['$scope', '$http', function($scope, $http) {
+	.controller('waiterCtrl', [function(dataFactory) {
 		var self=this;
 		
 		self.gridOptions= {
 			enableRowSelection: false,
 			enableRowHeaderSelection: false,
-			rowHeight: 35,
+			enableFiltering: true,
 			columnDefs: [
 				/*{
 					name: 'id',
@@ -19,21 +19,28 @@ angular.module('terra&terra')
 				},
 				{
 					name: 'price',
-					displayName: 'Prezzo'
+					displayName: 'Prezzo',
+					enableFiltering: false,
+					cellFilter: 'currency: "€ "'
 				},
 				{
 					name: 'quantity',
-					displayName: '#'
+					displayName: '#',
+					enableFiltering: false
 				},
 				{
 					name: 'add',
 					displayName: 'Aggiungi',
-					cellTemplate: '<button class="btn btn-outline-secondary" ng-click="grid.appScope.waiterController.add(row.entity.id)">+</button>'
+					cellTemplate: '<i class="far fa-plus-square fa-vh-alignment" ng-click="grid.appScope.waiterController.add(row.entity.id)"></i>',
+					cellClass: 'ui-grid-center-ar',
+					enableFiltering: false
 				},
 				{
 					name: 'remove',
 					displayName: 'Rimuovi',
-					cellTemplate: '<button class="btn btn-outline-secondary">-</button>'
+					cellTemplate: '<i class="far fa-minus-square fa-vh-alignment" ng-click="grid.appScope.waiterController.remove(row.entity.id)" style="cursor: pointer;"></i>',
+					cellClass: 'ui-grid-center-ar',
+					enableFiltering: false
 				}
 			]
 		};
@@ -58,20 +65,41 @@ angular.module('terra&terra')
 				quantity: 0
 			}
 		];
-/*
-		self.gridOptions.onRegisterApi=function(gridApi) {
-			self.gridApi=gridApi;
-			gridApi.selection.on.rowSelectionChanged($scope, callbackFn);
-		};*/
 
-		 var map=new Map([["01", 0], ["02", 0], ["03", 0]]);
+		console.log(dataFactory);
 
-		console.log(map);
+		self.add=function(id) {
+			var i=self.gridOptions.data.find(function(element) {
+				return element.id==id;
+			});
 
-		self.add=function(row) {
-			var count=map.get(row.toString());
-			count++;
-			map.set(count);
-			console.log(map);
-		}
+			i.quantity++;
+		};
+
+		self.remove=function(id) {
+			var i=self.gridOptions.data.find(function(element) {
+				return element.id==id;
+			});
+
+			if (i.quantity==0)
+				return;
+
+			i.quantity--;
+		};
+
+		self.send=function() {
+			var list=[];
+
+			self.gridOptions.data.forEach(element => {
+				if (element.quantity>0)
+					list.push(element.id);
+			});
+
+			if (list.length==0)
+				//self.error=true;
+				alert("Nessun piatto selezionato!");
+
+			console.log("invio ordine", list);
+		};
+
 	}]);
