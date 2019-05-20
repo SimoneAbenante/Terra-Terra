@@ -22,7 +22,7 @@ public class JobController {
 	@Autowired
 	public JobService jobService;
 
-	@GetMapping(value = "/", produces = "application/json")
+	@GetMapping(value = "", produces = "application/json")
 	public List<JobDto> getAllJob() {
 		return jobService.getAllJobAsDtoList();
 	}

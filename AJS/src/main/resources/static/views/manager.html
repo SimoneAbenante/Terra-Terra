@@ -1,5 +1,9 @@
-<h3>Gestione {{managerController.dataList}}</h3>
-<button type="button" class="btn btn-outline-secondary" ng-click="managerController.add()">Aggiungi piatto</button>
-<button type="button" class="btn btn-outline-secondary" ng-click="managerController.delete()">Cancella piatto</button>
+<h3>Gestione</h3>
+<button type="button" class="btn btn-outline-secondary" ng-click="managerController.add()">
+   <i class="fas fa-plus"></i> Aggiungi piatto
+</button>
+<button type="button" class="btn btn-outline-secondary" ng-click="managerController.delete()">
+   <i class="fas fa-trash-alt"></i> Cancella piatti
+</button>
 <div ui-grid="managerController.gridOptions" ui-grid-selection ui-grid-edit class="grid"></div>
 <div></div>

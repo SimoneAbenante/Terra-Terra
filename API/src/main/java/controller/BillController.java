@@ -22,7 +22,7 @@ public class BillController {
 	@Autowired
 	public BillService billService;
 
-	@GetMapping(value = "/", produces = "application/json")
+	@GetMapping(value = "", produces = "application/json")
 	public List<BillDto> getAllBill() {
 		return billService.getAllBillAsDtoList();
 	}

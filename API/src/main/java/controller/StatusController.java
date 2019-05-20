@@ -22,7 +22,7 @@ public class StatusController {
 	@Autowired
 	StatusService statusService;
 	
-	@GetMapping(value = "/", produces = "application/json")
+	@GetMapping(value = "", produces = "application/json")
 	public List<StatusDto> getAllStatus() {
 		return statusService.getAllStatusAsDtoList();
 	}

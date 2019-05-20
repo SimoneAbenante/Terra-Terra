@@ -24,7 +24,7 @@ public class DiningTableController {
 	@Autowired
 	public DiningTableService diningTableService;
 	
-	@GetMapping(value = "/", produces = "application/json")
+	@GetMapping(value = "", produces = "application/json")
 	public List<DiningTableDto> getAllDiningTable() {
 		return diningTableService.getAllDiningTableAsDtoList();
 	}
