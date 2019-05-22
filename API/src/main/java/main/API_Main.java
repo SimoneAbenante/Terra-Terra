@@ -25,10 +25,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @EnableDiscoveryClient
 @EnableFeignClients
-public class TerraTerraApplication {
+public class API_Main {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TerraTerraApplication.class, args);
+		SpringApplication.run(API_Main.class, args);
 	}
 
 	@Bean

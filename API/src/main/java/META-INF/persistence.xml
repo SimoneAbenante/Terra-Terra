@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-	<persistence-unit name="Terra-Terra" transaction-type="RESOURCE_LOCAL">
+	<persistence-unit name="persistance-db-api" transaction-type="RESOURCE_LOCAL">
 		<class>dao.Bill</class>
 		<class>dao.Dish</class>
 		<class>dao.Job</class>
 		<class>dao.DiningTable</class>
 		<class>dao.Status</class>
 		<properties>
-			<property name="javax.persistence.jdbc.driver" value="C:\Users\carmela.anzelmo\.m2\repository\mysql\mysql-connector-java\8.0.15\mysql-connector-java-8.0.15.jar"/>
+			<property name="javax.persistence.jdbc.driver" value="C:\Users\simone.abenante\.m2\repository\mysql\mysql-connector-java\8.0.15\mysql-connector-java-8.0.15.jar"/>
 			<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/terra&amp;terra?serverTimezone=UTC"/>
 			<property name="javax.persistence.jdbc.user" value="root"/>
 			<property name="javax.persistence.jdbc.password" value="root"/>

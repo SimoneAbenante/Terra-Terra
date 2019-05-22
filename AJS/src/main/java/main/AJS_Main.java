@@ -1,4 +1,4 @@
-package angularjs;
+package main;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -14,9 +14,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 @EnableEurekaClient
 @EnableFeignClients
-public class BootTerraTerraApplication {
+public class AJS_Main {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BootTerraTerraApplication.class, args);
+		SpringApplication.run(AJS_Main.class, args);
 	}
 }
