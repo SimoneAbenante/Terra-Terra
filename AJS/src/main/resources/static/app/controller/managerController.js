@@ -4,28 +4,18 @@ angular.module('terra&terra')
 	.controller('managerCtrl', ['$scope', '$http', function ($scope, $http) {
 		var self = this;
 
-
-		self.dataList = [
-			{
-				id: "01",
-				plate: "Pasta",
-				price: 10.00,
-			},
-			{
-				id: "02",
-				plate: "Secondi",
-				price: 15.00,
-			},
-			{
-				id: "03",
-				plate: "Dolci",
-				price: 5.00,
-			}
-		];
-
-		$http.get("/dishes")
+		$http.get("dishes")
 		.then(function(response) {
 			console.log(response.data);
+			var data=response.data;
+
+			data.forEach(element => {
+				element.quantity=0;
+			});
+
+			self.gridOptions.data=data;
+		}, function(error) {
+			
 		});
 
 		self.gridOptions = {
@@ -35,7 +25,7 @@ angular.module('terra&terra')
 			enableSelectAll: true,
 			columnDefs: [
 				{
-					name: 'plate',
+					name: 'name',
 					displayName: 'Piatto'
 				},
 				{
@@ -44,7 +34,6 @@ angular.module('terra&terra')
 					cellFilter: 'currency: "€ "'
 				}
 			],
-			data: self.dataList
 		};
 
 		self.add = function () {
@@ -86,6 +75,7 @@ angular.module('terra&terra')
 					selectedRow = [];
 				}
 			});
+
 		};
 
 		self.delete = function () {

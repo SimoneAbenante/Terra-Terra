@@ -1,6 +1,6 @@
 'use strict';
 
-var tt = angular.module('terra&terra', ['ngRoute', 'ui.grid', 'ui.grid.selection', 'ui.grid.edit']);
+var tt = angular.module('terra&terra', ['ngRoute', 'ui.grid', 'ui.grid.selection', 'ui.grid.edit', 'ui.grid.rowEdit', 'ui.grid.cellNav', 'ui.grid.resizeColumns']);
 
 tt.config(function ($routeProvider) {
 	$routeProvider

@@ -14,30 +14,34 @@ angular.module('terra&terra')
 					visible: false
 				},*/
 				{
-					name: 'plate',
-					displayName: 'Piatto'
+					name: 'name',
+					displayName: 'Piatto',
+					minWidth: 150,
+					width: 200
 				},
 				{
 					name: 'price',
 					displayName: 'Prezzo',
 					enableFiltering: false,
-					cellFilter: 'currency: "€ "'
+					cellFilter: 'currency: "€ "',
+					minWidth: 20,
+					width: '20%'
 				},
 				{
 					name: 'quantity',
 					displayName: '#',
-					enableFiltering: false
+					enableFiltering: false,
 				},
 				{
 					name: 'add',
-					displayName: 'Aggiungi',
+					displayName: '',
 					cellTemplate: '<i class="far fa-plus-square fa-vh-alignment" ng-click="grid.appScope.waiterController.add(row.entity.id)"></i>',
 					cellClass: 'ui-grid-center-ar',
 					enableFiltering: false
 				},
 				{
 					name: 'remove',
-					displayName: 'Rimuovi',
+					displayName: '',
 					cellTemplate: '<i class="far fa-minus-square fa-vh-alignment" ng-click="grid.appScope.waiterController.remove(row.entity.id)" style="cursor: pointer;"></i>',
 					cellClass: 'ui-grid-center-ar',
 					enableFiltering: false
@@ -48,11 +52,18 @@ angular.module('terra&terra')
 		$http.get("dishes")
 		.then(function(response) {
 			console.log(response.data);
+			var data=response.data;
+
+			data.forEach(element => {
+				element.quantity=0;
+			});
+
+			self.gridOptions.data=data;
 		}, function(error) {
-			alert(JSON.stringify(error));
+			
 		});
 
-		self.gridOptions.data= [
+		/*self.gridOptions.data= [
 			{
 				id: "01",
 				plate: "Pasta",
@@ -71,7 +82,7 @@ angular.module('terra&terra')
 				price: 5.00,
 				quantity: 0
 			}
-		];
+		];*/
 
 		self.add=function(id) {
 			var i=self.gridOptions.data.find(function(element) {
