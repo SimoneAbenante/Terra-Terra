@@ -2,7 +2,7 @@ package feign;
 
 import org.springframework.cloud.openfeign.FeignClient;
 
-@FeignClient
+@FeignClient("status")
 public interface StatusFeign {
 	
 }

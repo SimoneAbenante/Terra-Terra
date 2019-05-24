@@ -23,6 +23,11 @@ angular.module('terra&terra')
 			}
 		];
 
+		$http.get("/dishes")
+		.then(function(response) {
+			console.log(response.data);
+		});
+
 		self.gridOptions = {
 			enableRowSelection: true,
 			enableRowHeaderSelection: true,

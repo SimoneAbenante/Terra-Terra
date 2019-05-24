@@ -5,17 +5,17 @@ var tt = angular.module('terra&terra', ['ngRoute', 'ui.grid', 'ui.grid.selection
 tt.config(function ($routeProvider) {
 	$routeProvider
 		.when("/waiter", {
-			templateUrl: "/views/waiter.html",
+			templateUrl: "views/waiter.html",
 			controller: "waiterCtrl",
 			controllerAs: "waiterController"
 		})
 		.when("/manager", {
-			templateUrl: "/views/manager.html",
+			templateUrl: "views/manager.html",
 			controller: "managerCtrl",
 			controllerAs: "managerController"
 		})
 		.when("/kitchen", {
-			templateUrl: "/views/kitchen.html",
+			templateUrl: "views/kitchen.html",
 			controller: "kitchenCtrl",
 			controllerAs: "kitchenController"
 		})

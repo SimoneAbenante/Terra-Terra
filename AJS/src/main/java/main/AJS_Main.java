@@ -8,12 +8,10 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-//import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"controller"})
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 @EnableEurekaClient
-@EnableFeignClients
+@EnableFeignClients(basePackages = {"feign"})
 public class AJS_Main {
 
 	public static void main(String[] args) {

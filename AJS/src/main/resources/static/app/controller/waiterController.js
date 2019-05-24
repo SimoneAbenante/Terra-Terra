@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('terra&terra')
-	.controller('waiterCtrl', [function(dataFactory) {
+	.controller('waiterCtrl', ['$http', function($http) {
 		var self=this;
 		
 		self.gridOptions= {
@@ -45,6 +45,13 @@ angular.module('terra&terra')
 			]
 		};
 
+		$http.get("dishes")
+		.then(function(response) {
+			console.log(response.data);
+		}, function(error) {
+			alert(JSON.stringify(error));
+		});
+
 		self.gridOptions.data= [
 			{
 				id: "01",
@@ -65,8 +72,6 @@ angular.module('terra&terra')
 				quantity: 0
 			}
 		];
-
-		console.log(dataFactory);
 
 		self.add=function(id) {
 			var i=self.gridOptions.data.find(function(element) {
