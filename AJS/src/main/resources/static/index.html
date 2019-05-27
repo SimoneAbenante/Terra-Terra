@@ -17,7 +17,7 @@
 	<div class="container-fluid">
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<a class="navbar-brand" href="#">
-				<img src="/ajs/resources/icon.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+				<img src="/ajs/resources/icon.svg" width="30" height="30" class="d-inline-block align-top" alt="Ristorante Terra&amp;Terra">
 				Terra&amp;Terra
 			</a>
 			
@@ -28,11 +28,19 @@
 			</button>
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav">
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						  Cameriere
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						  <a class="dropdown-item" ng-href="#!prenotazioni">Prenotazioni</a>
+						  <a class="dropdown-item" ng-href="#!ordinazioni">Ordinazioni</a>
+						  <div class="dropdown-divider"></div>
+						  <a class="dropdown-item" href="#">Altro</a>
+						</div>
+					 </li>
 					<li class="nav-item">
-						<a class="nav-link" ng-href="#!waiter">Cameriere</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" ng-href="#!manager">Gestione</a>
+						<a class="nav-link" ng-href="#!manager">Gestore</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link" ng-href="#!kitchen">Cucina</a>

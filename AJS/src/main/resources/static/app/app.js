@@ -4,7 +4,7 @@ var tt = angular.module('terra&terra', ['ngRoute', 'ui.grid', 'ui.grid.selection
 
 tt.config(function ($routeProvider) {
 	$routeProvider
-		.when("/waiter", {
+		.when("/ordinazioni", {
 			templateUrl: "views/waiter.html",
 			controller: "waiterCtrl",
 			controllerAs: "waiterController"

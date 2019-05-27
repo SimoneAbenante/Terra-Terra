@@ -49,6 +49,8 @@ angular.module('terra&terra')
 
 		var selectedRow = [];
 
+		
+		
 		self.gridOptions.onRegisterApi = function (gridApi) {
 			$scope.gridApi = gridApi;
 
@@ -76,6 +78,16 @@ angular.module('terra&terra')
 				}
 			});
 
+			gridApi.rowEdit.on.saveRow($scope, self.saveRow);
+		};
+
+		self.saveRow = function (rowEntity) {
+			var promise = $http.post("dishes/", rowEntity);
+
+			// TODO da verificare
+			promise.resolve();
+			
+			$scope.gridApi.rowEdit.setSavePromise( rowEntity, promise.promise );
 		};
 
 		self.delete = function () {
@@ -85,6 +97,15 @@ angular.module('terra&terra')
 
 				var i = self.gridOptions.data.findIndex(function (row) {
 					return row.id == element;
+				});
+
+				var j = self.gridOptions.data.find(function (row) {
+					return row.id == element;
+				});;
+
+				$http.delete("dishes/delete", {params: {id: j.id}})
+					.then(function(response) {
+					alert("Piatto cancellato");
 				});
 
 				self.gridOptions.data.splice(i, 1);
