@@ -1,0 +1,13 @@
+<div class="card-columns">
+      <div ng-repeat="table in waiterController.diningTables track by table.id">
+         <div class="card"
+            ng-class="{'text-white bg-danger mb-3': table.status==1, 'text-white bg-warning mb-3': table.status==2, 'mb-3 bg-success text-white': table.status==3}">
+            <div class="card-header">
+               Tavolo {{table.id}}
+            </div>
+            <div class="card-body">
+               Numero posti: {{table.size}}
+            </div>
+         </div>
+      </div>
+   </div>

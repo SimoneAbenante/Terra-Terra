@@ -1,0 +1,27 @@
+<div class="row">
+   <div class="col-2">
+      <div class="form-group">
+         <select class="form-control" id="diningTables" ng-model="waiterController.diningTablesModel"
+            ng-options="diningTable.id for diningTable in waiterController.diningTables track by diningTable.id">
+         </select>
+      </div>
+   </div>
+   <div class="col-2">
+      <button type="button" class="btn btn-outline-secondary" ng-click="waiterController.send()">
+         <i class="fas fa-paper-plane"></i> Invia ordinazione
+      </button>
+   </div>
+   <div class="col-4">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert" ng-show="waiterController.error">
+         <strong>Nessun piatto selezionato</strong>
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+         </button>
+      </div>
+   </div>
+</div>
+<div class="row">
+   <div class="col-12">
+      <div ui-grid="waiterController.gridOptions" ui-grid-selection class="grid" ui-grid-resize-columns></div>
+   </div>
+</div>
