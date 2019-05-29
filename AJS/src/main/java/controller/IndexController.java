@@ -21,7 +21,7 @@ import dto.Table_Dishes;
 import feign.TT_API_Feign;;
 
 @RestController
-@RequestMapping(value="/dishes")
+@RequestMapping(value="api")
 public class IndexController {
 	
 	@Autowired
