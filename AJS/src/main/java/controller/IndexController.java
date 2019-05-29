@@ -27,123 +27,123 @@ public class IndexController {
 	@Autowired
 	private TT_API_Feign client;
 	 
-	@GetMapping(value = "/", produces = "application/json")
+	@GetMapping(value = "/bills/", produces = "application/json")
 	public List<BillDto> getAllBill() {
 		return client.getAllBill();
 	}
 
-	@GetMapping(value = "/{id}", produces = "application/json")
+	@GetMapping(value = "/bills/{id}", produces = "application/json")
 	public BillDto getBillById(@PathVariable Integer id) {
 		return client.getBillById(id);
 	}
 
-	@PostMapping(value = "/", produces = "application/json")
+	@PostMapping(value = "/bills/", produces = "application/json")
 	public BillDto saveBill(@RequestBody BillDto dto) {
 		return client.saveBill(dto);
 	}
 
-	@DeleteMapping(value = "/{id}", produces = "application/json")
+	@DeleteMapping(value = "/bills/{id}", produces = "application/json")
 	public Boolean deleteBill(@PathVariable Integer id) {
 		return client.deleteBill(id);
 	}
 	
-	@GetMapping(value = "/", produces = "application/json")
+	@GetMapping(value = "/dishes/", produces = "application/json")
 	public List<DishDto> getAllDish() {
 		return client.getAllDish();
 	}
 	
-	@GetMapping(value = "/{id}", produces = "application/json")
+	@GetMapping(value = "/dishes/{id}", produces = "application/json")
 	public DishDto getDishById(@PathVariable Integer id) {
-		return client.getDishById(id);
+		return getDishById(id);
 	}
 	
-	@PostMapping(value = "/", produces = "application/json")
+	@PostMapping(value = "/dishes/", produces = "application/json")
 	public DishDto saveDish(@RequestBody DishDto dto) {
 		return client.saveDish(dto);
 	}
 	
-	@DeleteMapping(value = "/{id}", produces = "application/json")
+	@DeleteMapping(value = "/dishes/{id}", produces = "application/json")
 	public Boolean deleteDish(@PathVariable Integer id) {
 		return client.deleteDish(id);
 	}
 	
-	@GetMapping(value = "/", produces = "application/json")
+	@GetMapping(value = "/tables/", produces = "application/json")
 	public List<DiningTableDto> getAllDiningTable() {
 		return client.getAllDiningTable();
 	}
 	
-	@GetMapping(value = "/{id}", produces = "application/json")
+	@GetMapping(value = "/tables/{id}", produces = "application/json")
 	public DiningTableDto getDiningTableById(@PathVariable Integer id) {
 		return client.getDiningTableById(id);
 	}
 	
-	@PostMapping(value = "/", produces = "application/json")
+	@PostMapping(value = "/tables/", produces = "application/json")
 	public DiningTableDto saveDiningTable(@RequestBody DiningTableDto dto) {
 		return client.saveDiningTable(dto);
 	}
 	
-	@DeleteMapping(value = "/{id}", produces = "application/json")
+	@DeleteMapping(value = "/tables/{id}", produces = "application/json")
 	public Boolean deleteDiningTable(@PathVariable Integer id) {
-		return deleteDiningTable(id);
+		return client.deleteDiningTable(id);
 	}
 	
-	@PostMapping(value = "/status", produces = "application/json")
+	@PostMapping(value = "/tables/status", produces = "application/json")
 	public Boolean setAllDiningTableStatus(@RequestParam Integer idStatus) {
 		return client.setAllDiningTableStatus(idStatus);
 	}
 	
-	@PostMapping(value = "/{id}/status/", produces = "application/json")
+	@PostMapping(value = "/tables/{id}/status/", produces = "application/json")
 	public Boolean setDiningTableStatus(@PathVariable Integer idTable, @RequestParam Integer idStatus) {
 		return client.setDiningTableStatus(idTable, idStatus);
 	}
 	
-	@GetMapping(value = "/", produces = "application/json")
+	@GetMapping(value = "/jobs/", produces = "application/json")
 	public List<JobDto> getAllJob() {
 		return client.getAllJob();
 	}
 
-	@GetMapping(value = "/{id}", produces = "application/json")
+	@GetMapping(value = "/jobs/{id}", produces = "application/json")
 	public JobDto getJobById(@PathVariable Integer id) {
 		return client.getJobById(id);
 	}
 
-	@GetMapping(value = "/bill", produces = "application/json")
+	@GetMapping(value = "/jobs/bill", produces = "application/json")
 	public List<JobDto> getAllJobByBillId(@RequestParam Integer idBill) {
 		return client.getAllJobByBillId(idBill);
 	}
 
-	@PostMapping(value = "/", produces = "application/json")
+	@PostMapping(value = "/jobs/", produces = "application/json")
 	public JobDto saveJobById(@RequestBody JobDto jobDto) {
 		return client.saveJobById(jobDto);
 	}
 
-	@PostMapping(value = "/params", produces = "application/json")
+	@PostMapping(value = "/jobs/params", produces = "application/json")
 	public List<JobDto> saveJobListById(@RequestParam(required = false) Integer idBill,
 			@RequestBody Table_Dishes listOfBill_Dishes) {
 		return client.saveJobListById(idBill, listOfBill_Dishes);
 	}
 
-	@DeleteMapping(value = "/{id}", produces = "application/json")
+	@DeleteMapping(value = "/jobs/{id}", produces = "application/json")
 	public Boolean deleteJob(@PathVariable Integer id) {
 		return client.deleteJob(id);
 	}
 	
-	@GetMapping(value = "/", produces = "application/json")
+	@GetMapping(value = "/statuses/", produces = "application/json")
 	public List<StatusDto> getAllStatus() {
 		return client.getAllStatus();
 	}
 	
-	@GetMapping(value = "/{id}", produces = "application/json")
+	@GetMapping(value = "/statuses/{id}", produces = "application/json")
 	public StatusDto getStatusById(@PathVariable Integer id) {
 		return client.getStatusById(id);
 	}
 	
-	@PostMapping(value = "/", produces = "application/json")
+	@PostMapping(value = "/statuses/", produces = "application/json")
 	public StatusDto saveStatus(@RequestBody StatusDto statusDto) {
 		return client.saveStatus(statusDto);
 	}
 	
-	@DeleteMapping(value = "/{id}", produces = "application/json")
+	@DeleteMapping(value = "/statuses/{id}", produces = "application/json")
 	public Boolean deleteStatus(@PathVariable Integer id) {
 		return client.deleteStatus(id);
 	}
