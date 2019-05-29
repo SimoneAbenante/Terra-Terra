@@ -9,7 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @NamedQuery(name="Job.findAll", query="SELECT j FROM Job j")
-public class Job implements dao.inter.InterfaceDao {
+public class Job implements dao.interfaces.InterfaceDao {
 	private static final long serialVersionUID = 1L;
 
 	@Id

@@ -6,18 +6,20 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dao.Bill;
 import dao.Job;
 import dto.JobDto;
 import repository.JobRepository;
-import dto.Bill_Dishes;
-import dto.ID;
+import service.interfaces.InterfaceService;
+import dto.Table_Dishes;
 
 @Service
-public class JobService {
+public class JobService implements InterfaceService {
 
 	@Autowired
-	JobRepository localJob;
+	JobRepository jobRepository;
+	
+	@Autowired
+	JobService jobService;
 	@Autowired
 	BillService billService;
 	@Autowired
@@ -27,132 +29,120 @@ public class JobService {
 	@Autowired
 	StatusService statusService;
 
-	public List<JobDto> getAllJobAsDtoList() {
+//Metodi Controller
+
+	public List<JobDto> getAllJobsAsDtoList() {
 		List<JobDto> listJobDto = new ArrayList<>();
-		localJob.findAll().forEach(e -> {
-			listJobDto.add(fromJobToJobDto(e));
-		});
+		jobRepository.findAll().forEach(e -> listJobDto.add(fromDaoToDto(e)));
 		return listJobDto;
 	}
 
 	public JobDto getJobAsDto(Integer id) {
 		JobDto jobDto = new JobDto();
-		localJob.findById(id).ifPresent(e -> {
-			jobDto.setId(e.getId());
-			jobDto.setId_bill(e.getBill().getId());
-			jobDto.setId_diningTable(e.getDiningTable().getId());
-			jobDto.setId_dish(e.getDish().getId());
-			jobDto.setId_status(e.getStatus().getId());
-		});
+		jobRepository.findById(id)
+				.ifPresent(e -> jobDto.setAll(e.getId(), billService.getIdFromBill(e.getBill()),
+						diningTableService.getIdFromDiningTable(e.getDiningTable()),
+						dishService.getIdFromDish(e.getDish()), statusService.getIdFromStatus(e.getStatus())));
 		return jobDto;
 	}
 
-	// Da controllare
-	public List<JobDto> getAllJobAsDtoListByBillId(Integer idBill) {
+	public List<JobDto> getAllJobsAsDtoListByBillId(Integer idBill) {
 		List<JobDto> listJobDto = new ArrayList<>();
-		localJob.findAllByIdBill(idBill).forEach(e -> {
-			listJobDto.add(fromJobToJobDto(e));
-		});
+		jobRepository.findAllByIdBill(idBill).forEach(e -> listJobDto.add(fromDaoToDto(e)));
 		return listJobDto;
 	}
 
 	public Boolean deleteJob(Integer idJob) {
-		Boolean test = false;
-		if (idJob != null && localJob.existsById(idJob)) {
-			// oggetti contenenti Integer id
-			ID idBill = new ID();
-			ID idTable = new ID();
-			localJob.findById(idJob).ifPresent(e -> {
-				// Sottrae valore del piatto al totale
-				e.getBill().setTotal(e.getBill().getTotal() - e.getDish().getPrice());
-				idBill.setId(e.getBill().getId());
-				idTable.setId(e.getDiningTable().getId());
-				localJob.delete(e);
+		if (isExistingId(idJob)) {
+			jobRepository.findById(idJob).ifPresent(e -> {
+				jobRepository.delete(e);
+				billService.setTotalAndVariation(e.getBill().getId(), 0.0);
+				resetDiningTableStatusIfNoJobsForBill(e.getBill().getId(), e.getDiningTable().getId());
 			});
-			// Se lista vuota togli prenotazione occupazione del tavolo
-			if (getAllJobAsDtoListByBillId(idBill.getId()).isEmpty())
-				diningTableService.setStatusOfDiningTable(idTable.getId(), 3);
-			test = true;
+			return true;
 		}
-		return test;
+		return false;
 	}
 
-	public JobDto saveJobById(Integer idBill, Integer idTable, Integer idDish) {
-		Job job = new Job();
-		job.setBill(getBillContolled(idBill));
-		if ((idTable != null && diningTableService.localTable.existsById(idTable))
-				& (idDish != null && dishService.localDish.existsById(idDish))) {
-			diningTableService.localTable.findById(idTable).ifPresent(e -> job.setDiningTable(e));
-			// Cambiare lo status del tavolo ad occupato
-			diningTableService.setStatusOfDiningTable(job.getDiningTable().getId(), 1);
-			dishService.localDish.findById(idTable).ifPresent(e -> job.setDish(e));
-			// Aggiunge il valore del piatto al totale
-			job.getBill().setTotal(job.getBill().getTotal() + job.getDish().getPrice());
-			statusService.localStatus.findById(1).ifPresent(e -> job.setStatus(e));
-			localJob.save(job);
-		}
-		return fromJobToJobDto(job);
+	public JobDto saveJob(JobDto jobDto) {
+		jobRepository.save(fromDtoToDao(jobDto));
+		billService.setTotalAndVariation(jobDto.getIdBill(), 0.0);
+		return jobDto;
 	}
 
-	public List<JobDto> saveMultipleJobById(Integer idBill, Bill_Dishes list) {
+	public List<JobDto> saveJobList(Integer idBill, Table_Dishes list) {
 		List<JobDto> jobDtoList = new ArrayList<>();
-		ID id = new ID();
-		if (idBill != null)
-			id.setId(idBill);
-		Byte counter = 0;
-		for (Integer dish : list.getDishes()) {
-			jobDtoList.add(saveJobById(id.getId(), list.getIdDiningTable(), dish));
-			if (counter == 0) {
-				id.setId(jobDtoList.get(0).getId_bill());
-				counter++;
+		Integer localIdBill = 0;
+		if (isPositiveId(idBill))
+			localIdBill = idBill;
+		if (diningTableService.isExistingId(list.getIdDiningTable())) {
+			JobDto jobDto;
+			for (Integer dish : list.getDishes()) {
+				jobDto = new JobDto();
+				if (dishService.isExistingId(dish)) {
+					jobDto.setAll(0, localIdBill, list.getIdDiningTable(), dish, 1);
+					jobDtoList.add(saveJob(jobDto));
+				}
 			}
 		}
 		return jobDtoList;
 	}
 
-	public Boolean setJobStatus(Integer idJob, Integer idStatus) {
-		Boolean test = false;
-		Job job = new Job();
-		if (idJob != null & idStatus != null & localJob.existsById(idJob)
-				& statusService.localStatus.existsById(idStatus)) {
-			localJob.findById(idJob).ifPresent(e -> {
-				statusService.localStatus.findById(idStatus).ifPresent(i -> job.setStatus(i));
-				job.setId(e.getId());
-				job.setBill(e.getBill());
-				job.setDiningTable(e.getDiningTable());
-				job.setDish(e.getDish());
-			});
-			localJob.save(job);
-		}
-		return test;
-	}
-
-	// Da terminare
-	public Bill getBillContolled(Integer id) {
-		Bill bill = new Bill();
-		if (id == null)
-			id = 0;
-		if (billService.localBill.existsById(id))
-			billService.localBill.findById(id).ifPresent(e -> {
-				bill.setId(e.getId());
-				bill.setPaymentMethod(e.getPaymentMethod());
-				bill.setTotal(e.getTotal());
-			});
-		else {
-			bill.setPaymentMethod("Undefined");
-			bill.setTotal(0.0);
-			billService.localBill.save(bill);
-		}
-		return bill;
-	}
-
-	public static JobDto fromJobToJobDto(Job job) {
+	public JobDto setJobStatus(Integer idJob, Integer idStatus) {
 		JobDto jobDto = new JobDto();
-		jobDto.setId(job.getId());
-		jobDto.setId_bill(job.getBill().getId());
-		jobDto.setId_diningTable(job.getDiningTable().getId());
-		jobDto.setId_dish(job.getDish().getId());
-		jobDto.setId_status(job.getStatus().getId());
+		if (isExistingId(idJob) & statusService.isExistingId(idStatus)) {
+			jobDto = getJobAsDto(idJob);
+			jobDto = setStatus(idStatus);
+			saveJob(jobDto);
+		}
+		return jobDto;
+	}
+
+// Metodi di supporto
+
+	JobDto fromDaoToDto(Job job) {
+		JobDto dto = new JobDto();
+		dto.setAll(job.getId(), billService.getIdFromBill(job.getBill()),
+				diningTableService.getIdFromDiningTable(job.getDiningTable()), dishService.getIdFromDish(job.getDish()),
+				statusService.getIdFromStatus(job.getStatus()));
+		return dto;
+	}
+
+	Job fromDtoToDao(JobDto jobDto) {
+		Job dao;
+		dao = setAllDaoParams(jobDto.getId(), jobDto.getIdBill(), jobDto.getIdDiningTable(), jobDto.getIdDish(),
+				jobDto.getIdStatus());
+		return dao;
+	}
+
+	Job setAllDaoParams(Integer id, Integer idBill, Integer idDiningTable, Integer idDish, Integer idStatus) {
+		Job dao = new Job();
+		if (isPositiveId(id))
+			dao.setId(id);
+		else
+			dao.setId(0);
+		dao.setBill(billService.getBillFromId(idBill));
+		dao.setDiningTable(diningTableService.getDiningTableFromId(idDiningTable));
+		dao.setDish(dishService.getDishFromId(idDish));
+		dao.setStatus(statusService.getStatusFromId(idStatus));
+		return dao;
+	}
+
+	public Boolean isExistingId(Integer id) {
+		if (id != null && jobRepository.existsById(id))
+			return true;
+		return false;
+	}
+
+	private void resetDiningTableStatusIfNoJobsForBill(Integer idBill, Integer idTable) {
+		List<JobDto> jobDtoList = getAllJobsAsDtoListByBillId(idBill);
+		if (jobDtoList.isEmpty())
+			diningTableService.setStatusOfDiningTable(idTable, 3);
+	}
+
+	private JobDto setStatus(Integer idStatus) {
+		JobDto jobDto = new JobDto();
+		jobDto.setIdStatus(idStatus);
 		return jobDto;
 	}
 

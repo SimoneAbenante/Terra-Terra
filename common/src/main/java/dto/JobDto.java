@@ -1,6 +1,7 @@
 package dto;
 
 import dto.inter.InterfaceDto;
+import exception.LocalException;
 
 public class JobDto implements InterfaceDto {
 
@@ -8,16 +9,16 @@ public class JobDto implements InterfaceDto {
 	 * 
 	 */
 	private static final long serialVersionUID = 2951026190344300972L;
-	
+
 	private Integer id;
-	private Integer id_bill;
-	private Integer id_diningTable;
-	private Integer id_dish;
-	private Integer id_status;
+	private Integer idBill;
+	private Integer idDiningTable;
+	private Integer idDish;
+	private Integer idStatus;
 
 	public JobDto() {
 		super();
-		setId(0);
+		setAll(defaultId, defaultId, defaultId, defaultId, defaultId);
 	}
 
 	public Integer getId() {
@@ -25,39 +26,100 @@ public class JobDto implements InterfaceDto {
 	}
 
 	public void setId(Integer id) {
-		this.id = id;
+		try {
+			if (isValidInteger(id))
+				this.id = id;
+		} catch (LocalException e) {
+			this.id = defaultId;
+			e.setMessage(setFailMessage);
+			e.getMessage();
+			e.getStackTrace();
+		}
 	}
 
-	public Integer getId_bill() {
-		return id_bill;
+	public Integer getIdBill() {
+		return idBill;
 	}
 
-	public void setId_bill(Integer id_bill) {
-		this.id_bill = id_bill;
+	public void setIdBill(Integer idBill) {
+		try {
+			if (isValidInteger(idBill))
+				this.idBill = idBill;
+		} catch (LocalException e) {
+			this.idBill = defaultId;
+			e.setMessage(setFailMessage);
+			e.getMessage();
+			e.getStackTrace();
+		}
 	}
 
-	public Integer getId_diningTable() {
-		return id_diningTable;
+	public Integer getIdDiningTable() {
+		return idDiningTable;
 	}
 
-	public void setId_diningTable(Integer id_table) {
-		this.id_diningTable = id_table;
+	public void setIdDiningTable(Integer idTable) {
+		try {
+			if (isValidInteger(idTable))
+				this.idDiningTable = idTable;
+		} catch (LocalException e) {
+			this.idDiningTable = defaultId;
+			e.setMessage(setFailMessage);
+			e.getMessage();
+			e.getStackTrace();
+		}
 	}
 
-	public Integer getId_dish() {
-		return id_dish;
+	public Integer getIdDish() {
+		return idDish;
 	}
 
-	public void setId_dish(Integer id_dish) {
-		this.id_dish = id_dish;
+	public void setIdDish(Integer idDish) {
+		try {
+			if (isValidInteger(idDish))
+				this.idDish = idDish;
+		} catch (LocalException e) {
+			this.idDish = defaultId;
+			e.setMessage(setFailMessage);
+			e.getMessage();
+			e.getStackTrace();
+		}
 	}
 
-	public Integer getId_status() {
-		return id_status;
+	public Integer getIdStatus() {
+		return idStatus;
 	}
 
-	public void setId_status(Integer id_status) {
-		this.id_status = id_status;
+	public void setIdStatus(Integer idStatus) {
+		try {
+			if (isValidInteger(idStatus))
+				this.idStatus = idStatus;
+		} catch (LocalException e) {
+			this.idStatus = defaultId;
+			e.setMessage(setFailMessage);
+			e.getMessage();
+			e.getStackTrace();
+		}
+	}
+
+	public void setAll(Integer idBill, Integer idDiningTable, Integer idDish) {
+		setIdBill(idBill);
+		setIdDiningTable(idDiningTable);
+		setIdDish(idDish);
+	}
+
+	public void setAll(Integer id, Integer idBill, Integer idDiningTable, Integer idDish) {
+		setId(id);
+		setIdBill(idBill);
+		setIdDiningTable(idDiningTable);
+		setIdDish(idDish);
+	}
+
+	public void setAll(Integer id, Integer idBill, Integer idDiningTable, Integer idDish, Integer idStatus) {
+		setId(id);
+		setIdBill(idBill);
+		setIdDiningTable(idDiningTable);
+		setIdDish(idDish);
+		setIdStatus(idStatus);
 	}
 
 }

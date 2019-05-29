@@ -9,68 +9,86 @@ import org.springframework.stereotype.Service;
 import dao.Dish;
 import dto.DishDto;
 import repository.DishRepository;
+import service.interfaces.InterfaceService;
 
 @Service
-public class DishService {
+public class DishService implements InterfaceService {
 
 	@Autowired
-	DishRepository localDish;
+	DishRepository dishRepository;
+	
+	@Autowired
+	DishService dishService;
 
-	public List<DishDto> getAllDishAsDtoList() {
+//Metodi Controller
+
+	public List<DishDto> getAllDishesAsDtoList() {
 		List<DishDto> listDishDto = new ArrayList<>();
-		localDish.findAll().forEach(e -> {
-			listDishDto.add(fromDishToDto(e));
-		});
+		dishRepository.findAll().forEach(e -> listDishDto.add(fromDaoToDto(e)));
 		return listDishDto;
 	}
 
 	public DishDto getDishAsDto(Integer id) {
 		DishDto dishDto = new DishDto();
-		if (id != null && localDish.existsById(id))
-		localDish.findById(id).ifPresent(e -> {
-			dishDto.setId(e.getId());
-			dishDto.setName(e.getName());
-			dishDto.setPrice(e.getPrice());
-		});
+		if (isExistingId(id))
+			dishRepository.findById(id).ifPresent(e -> dishDto.setAll(e.getId(), e.getName(), e.getPrice()));
 		return dishDto;
-	}
-	
-	public Dish getDishById(Integer id) {
-		Dish dish = new Dish();
-		if (id != null && localDish.existsById(id))
-		localDish.findById(id).ifPresent(e -> {
-			dish.setId(e.getId());
-			dish.setName(e.getName());
-			dish.setPrice(e.getPrice());
-		});
-		return dish;
 	}
 
 	public Boolean deleteDish(Integer id) {
-		Boolean test = false;
-		if (id != null && localDish.existsById(id)) {
-			localDish.deleteById(id);
-			test = true;
+		if (isExistingId(id)) {
+			dishRepository.deleteById(id);
+			return true;
 		}
-		return test;
+		return false;
 	}
 
-	public Dish saveDish(DishDto dishDto) {
-		Dish dish = new Dish();
-		if (dishDto.getId() != null && dishDto.getId() > 0)
-			dish.setId(dishDto.getId());
-		dish.setName(dishDto.getName());
-		dish.setPrice(dishDto.getPrice());
-		localDish.save(dish);
-		return dish;
-	}
-	
-	public static DishDto fromDishToDto(Dish dish) {
-		DishDto dishDto = new DishDto();
-		dishDto.setId(dish.getId());
-		dishDto.setName(dish.getName());
-		dishDto.setPrice(dish.getPrice());
+	public DishDto saveDish(DishDto dishDto) {
+		dishRepository.save(fromDtoToDao(dishDto));
 		return dishDto;
+	}
+
+// Metodi di supporto
+
+	DishDto fromDaoToDto(Dish dish) {
+		DishDto dto = new DishDto();
+		dto.setAll(dish.getId(), dish.getName(), dish.getPrice());
+		return dto;
+	}
+
+	Dish fromDtoToDao(DishDto dishDto) {
+		Dish dao;
+		dao = setAllDaoParams(dishDto.getId(), dishDto.getName(), dishDto.getPrice());
+		return dao;
+	}
+
+	Dish setAllDaoParams(Integer id, String name, Double price) {
+		Dish dao = new Dish();
+		if (isPositiveId(id))
+			dao.setId(id);
+		else
+			dao.setId(0);
+		dao.setName(name);
+		dao.setPrice(price);
+		return dao;
+	}
+
+	Integer getIdFromDish(Dish dish) {
+		return dish.getId();
+	}
+
+	Dish getDishFromId(Integer id) {
+		return fromDtoToDao(getDishAsDto(id));
+	}
+
+	Double getPriceFromDishId(Integer idDish) {
+		return getDishAsDto(idDish).getPrice();
+	}
+
+	public Boolean isExistingId(Integer id) {
+		if (id != null && dishRepository.existsById(id))
+			return true;
+		return false;
 	}
 
 }

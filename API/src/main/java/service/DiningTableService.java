@@ -7,101 +7,115 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import dao.DiningTable;
-import dao.Status;
 import dto.DiningTableDto;
 import repository.DiningTableRepository;
+import service.interfaces.InterfaceService;
 
 @Service
-public class DiningTableService {
+public class DiningTableService implements InterfaceService {
 
 	@Autowired
-	DiningTableRepository localTable;
+	DiningTableRepository diningTableRepository;
+	
+	@Autowired
+	DiningTableService diningTableService;
 	@Autowired
 	StatusService statusService;
 
-	public List<DiningTableDto> getAllDiningTableAsDtoList() {
+// Metodi Controller
+
+	public List<DiningTableDto> getAllDiningTablesAsDtoList() {
 		List<DiningTableDto> listTableDto = new ArrayList<>();
-		localTable.findAll().forEach(e -> {
-			listTableDto.add(fromDiningTableToDto(e));
-		});
+		diningTableRepository.findAll().forEach(e -> listTableDto.add(fromDaoToDto(e)));
 		return listTableDto;
 	}
 
 	public DiningTableDto getDiningTableAsDto(Integer id) {
 		DiningTableDto diningTableDto = new DiningTableDto();
-		if (id != null && localTable.existsById(id))
-			localTable.findById(id).ifPresent(e -> {
-				diningTableDto.setId(e.getId());
-				diningTableDto.setSize(e.getSize());
-				diningTableDto.setStatus(e.getStatus().getId());
-			});
+		if (isExistingId(id))
+			diningTableRepository.findById(id).ifPresent(
+					e -> diningTableDto.setAll(e.getId(), e.getSize(), statusService.getIdFromStatus(e.getStatus())));
 		return diningTableDto;
-	}
-
-	public DiningTableDto getDiningTableById(Integer id) {
-		DiningTable diningTable = new DiningTable();
-		if (id != null && localTable.existsById(id))
-			localTable.findById(id).ifPresent(e -> {
-				diningTable.setId(e.getId());
-				diningTable.setSize(e.getSize());
-				diningTable.setStatus(e.getStatus());
-			});
-		return fromDiningTableToDto(diningTable);
 	}
 
 	public Boolean deleteDiningTable(Integer id) {
-		Boolean test = false;
-		if (id != null && localTable.existsById(id)) {
-			localTable.deleteById(id);
-			test = true;
+		if (isExistingId(id)) {
+			diningTableRepository.deleteById(id);
+			return true;
 		}
-		return test;
+		return false;
 	}
 
-	public DiningTable saveDiningTable(DiningTableDto diningTableDto) {
-		DiningTable table = new DiningTable();
-		if (diningTableDto.getId() != null && diningTableDto.getId() > 0)
-			table.setId(diningTableDto.getId());
-		table.setSize(diningTableDto.getSize());
-		table.setStatus(statusService.getStatusById(diningTableDto.getStatus()));
-		localTable.save(table);
-		return table;
+	public DiningTableDto saveDiningTable(DiningTableDto diningTableDto) {
+		diningTableRepository.save(fromDtoToDao(diningTableDto));
+		return diningTableDto;
 	}
 
-	public Status setStatusOfDiningTable(Integer idTable, Integer idStatus) {
-		DiningTable table = new DiningTable();
-		if ((idTable != null & idStatus != null)
-				&& (localTable.existsById(idTable) & statusService.localStatus.existsById(idStatus))) {
-			localTable.findById(idTable).ifPresent(e -> {
-				statusService.localStatus.findById(idStatus).ifPresent(i -> {
-					table.setStatus(i);
-				});
-				table.setId(e.getId());
-				table.setSize(e.getSize());
-			});
-			localTable.save(table);
+	public Boolean setStatusOfDiningTable(Integer idTable, Integer idStatus) {
+		if (isExistingId(idTable) & statusService.isExistingId(idStatus)) {
+			DiningTableDto table;
+			table = getDiningTableAsDto(idTable);
+			table = setStatus(table, idStatus);
+			diningTableRepository.save(fromDtoToDao(table));
+			return true;
 		}
-		return table.getStatus();
+		return false;
 	}
 
-	public Boolean setStatusOfAllDiningTable(Integer idStatus) {
-		Boolean test = false;
-		List<DiningTableDto> list = getAllDiningTableAsDtoList();
-		if (idStatus != null) {
+	public Boolean setStatusOfAllDiningTables(Integer idStatus) {
+		if (statusService.isExistingId(idStatus)) {
+			List<DiningTableDto> list = getAllDiningTablesAsDtoList();
 			for (DiningTableDto table : list) {
 				setStatusOfDiningTable(table.getId(), idStatus);
 			}
-			test = true;
+			return true;
 		}
-		return test;
+		return false;
 	}
 
-	public static DiningTableDto fromDiningTableToDto(DiningTable table) {
-		DiningTableDto diningTableDto = new DiningTableDto();
-		diningTableDto.setId(table.getId());
-		diningTableDto.setSize(table.getSize());
-		diningTableDto.setStatus(table.getStatus().getId());
-		return diningTableDto;
+// Metodi di supporto
+
+	DiningTableDto fromDaoToDto(DiningTable table) {
+		DiningTableDto dto = new DiningTableDto();
+		dto.setAll(table.getId(), table.getSize(), statusService.getIdFromStatus(table.getStatus()));
+		return dto;
+	}
+
+	DiningTable fromDtoToDao(DiningTableDto tableDto) {
+		DiningTable dao;
+		dao = setAllDaoParams(tableDto.getId(), tableDto.getSize(), tableDto.getStatus());
+		return dao;
+	}
+
+	DiningTable setAllDaoParams(Integer id, Integer size, Integer idStatus) {
+		DiningTable dao = new DiningTable();
+		if (isPositiveId(id))
+			dao.setId(id);
+		else
+			dao.setId(0);
+		dao.setSize(size);
+		dao.setStatus(statusService.getStatusFromId(idStatus));
+		return dao;
+	}
+
+	Integer getIdFromDiningTable(DiningTable table) {
+		return table.getId();
+	}
+
+	DiningTable getDiningTableFromId(Integer id) {
+		return fromDtoToDao(getDiningTableAsDto(id));
+	}
+
+	public Boolean isExistingId(Integer id) {
+		if (id != null && diningTableRepository.existsById(id))
+			return true;
+		return false;
+	}
+
+	private DiningTableDto setStatus(DiningTableDto dto, Integer idStatus) {
+		if (statusService.isExistingId(idStatus))
+			dto.setStatus(idStatus);
+		return dto;
 	}
 
 }

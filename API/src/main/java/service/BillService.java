@@ -8,75 +8,105 @@ import org.springframework.stereotype.Service;
 
 import dao.Bill;
 import dto.BillDto;
-import dto.Total;
+import dto.JobDto;
 import repository.BillRepository;
+import service.interfaces.InterfaceService;
 
 @Service
-public class BillService {
+public class BillService implements InterfaceService {
 
 	@Autowired
-	BillRepository localBill;
+	BillRepository billRepository;
+	
+	@Autowired
+	BillService billService;
+	@Autowired
+	DishService dishService;
 	@Autowired
 	JobService jobService;
 
-	public List<BillDto> getAllBillAsDtoList() {
+//Metodi Controller
+
+	public List<BillDto> getAllBillsAsDtoList() {
 		List<BillDto> listBillDto = new ArrayList<>();
-		localBill.findAll().forEach(e -> {
-			listBillDto.add(fromBillToDto(e));
-		});
+		billRepository.findAll().forEach(e -> listBillDto.add(fromDaoToDto(e)));
 		return listBillDto;
 	}
 
 	public BillDto getBillAsDto(Integer id) {
 		BillDto billDto = new BillDto();
-		if (id != null && localBill.existsById(id))
-		localBill.findById(id).ifPresent(e -> {
-			billDto.setId(e.getId());
-			billDto.setPaymentMethod(e.getPaymentMethod());
-			billDto.setTotal(e.getTotal());
-		});
+		if (isExistingId(id))
+			billRepository.findById(id).ifPresent(e -> billDto.setAll(e.getId(), e.getPaymentMethod(), e.getTotal()));
 		return billDto;
 	}
 
 	public Boolean deleteBill(Integer id) {
-		Boolean test = false;
-		if (id != null && localBill.existsById(id)) {
-			localBill.deleteById(id);
-			test = true;
+		if (isExistingId(id)) {
+			billRepository.deleteById(id);
+			return true;
 		}
-		return test;
+		return false;
 	}
 
-	public Bill saveBill(BillDto billDto) {
-		Bill bill = new Bill();
-		if (billDto.getId() != null && billDto.getId() > 0)
-			bill.setId(billDto.getId());
-		bill.setPaymentMethod(billDto.getPaymentMethod());
-		bill.setTotal(billDto.getTotal());
-		localBill.save(bill);
-		return bill;
+	public BillDto saveBill(BillDto billDto) {
+		billRepository.save(fromDtoToDao(billDto));
+		return billDto;
 	}
 
-	public Total setTotalById(Integer idBill, Double variation) {
-		Total total = new Total();
-		if (idBill != null && idBill > 0 & localBill.existsById(idBill))
-			localBill.findById(idBill).ifPresent(e -> {
-				jobService.localJob.findAllByIdBill(e.getId()).forEach(i -> {
-					e.setTotal(e.getTotal() + i.getDish().getPrice());
-				});
-				if (variation != null && variation != 0)
-					e.setTotal(e.getTotal() + variation);
-				localBill.save(e);
-			});
+	public Double setTotalAndVariation(Integer idBill, Double variation) {
+		Double total = 0.0;
+		BillDto billDto = getBillAsDto(idBill);
+		List<JobDto> jobDtoList = jobService.getAllJobsAsDtoListByBillId(idBill);
+		for (JobDto j : jobDtoList) {
+			total += dishService.getPriceFromDishId(j.getIdDish());
+		}
+		billDto = getBillUpdateWhithTotal(billDto, total);
+		saveBill(billDto);
 		return total;
 	}
 
-	public static BillDto fromBillToDto(Bill bill) {
-		BillDto billDto = new BillDto();
-		billDto.setId(bill.getId());
-		billDto.setPaymentMethod(bill.getPaymentMethod());
-		billDto.setTotal(bill.getTotal());
+// Metodi di supporto
+
+	BillDto fromDaoToDto(Bill bill) {
+		BillDto dto = new BillDto();
+		dto.setAll(bill.getId(), bill.getPaymentMethod(), bill.getTotal());
+		return dto;
+	}
+
+	Bill fromDtoToDao(BillDto billDto) {
+		Bill dao;
+		dao = setAllDaoParams(billDto.getId(), billDto.getPaymentMethod(), billDto.getTotal());
+		return dao;
+	}
+
+	Bill setAllDaoParams(Integer id, String paymentMethod, Double total) {
+		Bill dao = new Bill();
+		if (isPositiveId(id))
+			dao.setId(id);
+		else
+			dao.setId(0);
+		dao.setPaymentMethod(paymentMethod);
+		dao.setTotal(total);
+		return dao;
+	}
+
+	Integer getIdFromBill(Bill bill) {
+		return bill.getId();
+	}
+
+	Bill getBillFromId(Integer id) {
+		return fromDtoToDao(getBillAsDto(id));
+	}
+
+	BillDto getBillUpdateWhithTotal(BillDto billDto, Double total) {
+		billDto.setTotal(total);
 		return billDto;
+	}
+
+	public Boolean isExistingId(Integer id) {
+		if (id != null && billRepository.existsById(id))
+			return true;
+		return false;
 	}
 
 }

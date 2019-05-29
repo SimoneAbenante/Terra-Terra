@@ -1,4 +1,4 @@
-package dao.inter;
+package dao.interfaces;
 
 import java.io.Serializable;
 

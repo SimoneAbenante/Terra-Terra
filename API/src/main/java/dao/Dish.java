@@ -10,7 +10,7 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Dish.findAll", query="SELECT d FROM Dish d")
-public class Dish implements dao.inter.InterfaceDao {
+public class Dish implements dao.interfaces.InterfaceDao {
 	private static final long serialVersionUID = 1L;
 
 	@Id

@@ -5,13 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import dao.Status;
 import dto.StatusDto;
 import service.StatusService;
 
@@ -22,23 +21,23 @@ public class StatusController {
 	@Autowired
 	StatusService statusService;
 	
-	@GetMapping(value = "", produces = "application/json")
+	@GetMapping(value = "/", produces = "application/json")
 	public List<StatusDto> getAllStatus() {
-		return statusService.getAllStatusAsDtoList();
+		return statusService.getAllStatusesAsDtoList();
 	}
 	
-	@GetMapping(value = "/id", produces = "application/json")
-	public Status getStatusById(@RequestParam Integer id) {
-		return statusService.getStatusById(id);
+	@GetMapping(value = "/{id}", produces = "application/json")
+	public StatusDto getStatusById(@PathVariable Integer id) {
+		return statusService.getStatusAsDto(id);
 	}
 	
 	@PostMapping(value = "/", produces = "application/json")
-	public Status saveStatus(@RequestParam StatusDto statusDto) {
+	public StatusDto saveStatus(@RequestBody StatusDto statusDto) {
 		return statusService.saveStatus(statusDto);
 	}
 	
-	@DeleteMapping(value = "/", produces = "application/json")
-	public Boolean deleteStatus(@RequestBody Integer id) {
+	@DeleteMapping(value = "/{id}", produces = "application/json")
+	public Boolean deleteStatus(@PathVariable Integer id) {
 		return statusService.deleteStatus(id);
 	}
 	

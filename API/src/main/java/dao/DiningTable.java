@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Entity
 @Table(name="dining_table")
 @NamedQuery(name="DiningTable.findAll", query="SELECT d FROM DiningTable d")
-public class DiningTable implements dao.inter.InterfaceDao {
+public class DiningTable implements dao.interfaces.InterfaceDao {
 	private static final long serialVersionUID = 1L;
 
 	@Id
