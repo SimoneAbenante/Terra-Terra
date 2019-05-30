@@ -13,23 +13,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import main.API_Main;
+import it.ttsolution.form.tt.api.API_Main;
+import it.ttsolution.form.tt.api.controller.DishController;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = API_Main.class)
 public class DishControllerTest {
 
 	@Autowired
-	private DishController dishController;
+	DishController dishController;
+
+	private MockMvc mockMvc;
 
 	@Test
 	public void testGetAllDish() throws Exception {
-		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(dishController).build();
-		mockMvc.perform(get("/dishes/"))
-
-				.andExpect(status().isOk())
-
-				.andExpect(content().string(containsString("penne al sugo")));  
+		mockMvc = MockMvcBuilders.standaloneSetup(dishController).build();
+		mockMvc.perform(get("/dishes/")).andExpect(status().isOk()).andExpect(content()
+				.string(containsString("penne al sugo")));
 	}
 
 }

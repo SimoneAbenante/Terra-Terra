@@ -103,7 +103,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>main.API_Main</mainClass>
+							<mainClass>it.ttsolution.form.tt.api.API_Main</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

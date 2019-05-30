@@ -1,0 +1,13 @@
+package it.ttsolution.form.tt.api.repository;
+
+import java.util.List;
+
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
+import it.ttsolution.form.tt.api.dao.DiningTable;
+
+@Repository
+public interface DiningTableRepository extends CrudRepository<DiningTable, Integer>{
+	List<DiningTable> findAll();
+}
