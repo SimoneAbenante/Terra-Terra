@@ -19,8 +19,6 @@ public class BillService implements InterfaceService {
 	BillRepository billRepository;
 	
 	@Autowired
-	BillService billService;
-	@Autowired
 	DishService dishService;
 	@Autowired
 	JobService jobService;

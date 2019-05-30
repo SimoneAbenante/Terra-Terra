@@ -17,9 +17,6 @@ public class DishService implements InterfaceService {
 	@Autowired
 	DishRepository dishRepository;
 	
-	@Autowired
-	DishService dishService;
-
 //Metodi Controller
 
 	public List<DishDto> getAllDishesAsDtoList() {
