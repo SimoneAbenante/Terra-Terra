@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('terra&terra')
-	.controller('managerCtrl', ['$scope', '$http', function ($scope, $http) {
+	.controller('managerCtrl', ['$scope', '$http', '$q', function ($scope, $http, $q) {
 		var self = this;
 
 		self.gridOptions = {
@@ -59,10 +59,8 @@ angular.module('terra&terra')
 			});
 
 		self.add = function () {
-			var n = self.gridOptions.data.length + 1;
 			self.gridOptions.data.push({
-				"id": "0" + n,
-				"plate:": "",
+				"id": "0",
 				"price": 0.00
 			});
 
@@ -71,10 +69,8 @@ angular.module('terra&terra')
 
 		var selectedRow = [];
 
-
-
 		self.gridOptions.onRegisterApi = function (gridApi) {
-			$scope.gridApi = gridApi;
+			self.gridApi = gridApi;
 
 			gridApi.selection.on.rowSelectionChanged($scope, function (row) {
 				if (row.isSelected)
@@ -100,20 +96,38 @@ angular.module('terra&terra')
 				}
 			});
 
+			/*gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
+				console.log('edited row id:' + rowEntity.id + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue);
+				//$scope.$apply();
+			});*/
+
 			gridApi.rowEdit.on.saveRow($scope, self.saveRow);
 		};
 
 		self.saveRow = function (rowEntity) {
-			var promise = $http.post("dishes/", rowEntity);
+			console.log(rowEntity);
+			let saveData = {
+				id: rowEntity.id,
+				name: rowEntity.name,
+				price: rowEntity.price
+			};
 
-			// TODO da verificare
-			promise.resolve();
+			var promise = $q.defer();
 
-			$scope.gridApi.rowEdit.setSavePromise(rowEntity, promise.promise);
+			$http.post("api/dishes/", saveData)
+				.then(function success(response) {
+					console.log("piatto salvato", response.data);
+					promise.resolve();
+				}, function error(response) {
+					promise.reject();
+				});
+
+			self.gridApi.rowEdit.setSavePromise(rowEntity, promise.promise);
+
 		};
 
 		self.delete = function () {
-			console.log("delete", selectedRow);
+			//	console.log("delete", selectedRow);
 
 			selectedRow.forEach(function (element) {
 
@@ -125,9 +139,11 @@ angular.module('terra&terra')
 					return row.id == element;
 				});;
 
-				$http.delete("dishes/delete", { params: { id: j.id } })
-					.then(function (response) {
+				$http.delete("api/dishes/" + j.id)
+					.then(function success(response) {
 						alert("Piatto cancellato");
+					}, function error(response) {
+						console.log(response.data);
 					});
 
 				self.gridOptions.data.splice(i, 1);
@@ -136,32 +152,12 @@ angular.module('terra&terra')
 			selectedRow = [];
 		};
 
-		self.diningTables = [
-			{
-				"id": 1,
-				"size": 5,
-				"status": 3
-			},
-			{
-				"id": 2,
-				"size": 6,
-				"status": 3
-			},
-			{
-				"id": 3,
-				"size": 4,
-				"status": 1
-			},
-			{
-				"id": 4,
-				"size": 10,
-				"status": 3
-			},
-			{
-				"id": 5,
-				"size": 8,
-				"status": 3
-			}
-		];
+		self.diningTables = [];
+
+		$http.get("api/tables/")
+			.then(function success(response) {
+				self.diningTables = response.data;
+				console.log("tables", self.diningTables);
+			});
 
 	}]);

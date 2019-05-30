@@ -1,9 +1,8 @@
 'use strict';
 
 angular.module('terra&terra')
-	.controller('kitchenCtrl', ['$http', function ($http) {
+	.controller('kitchenCtrl', ['$http', '$q', function ($http, $q) {
 		var self = this;
-		self.action='Prendi in carica';
 
 		self.gridOptions = {
 			enableRowSelection: true,
@@ -30,81 +29,39 @@ angular.module('terra&terra')
 			]
 		};
 
-		self.jobs = [
-			{
-				"id": 8,
-				"id_bill": 6,
-				"id_diningTable": 3,
-				"id_dish": 1,
-				"id_status": 3
-			},
-			{
-				"id": 9,
-				"id_bill": 7,
-				"id_diningTable": 1,
-				"id_dish": 2,
-				"id_status": 3
-			},
-			{
-				"id": 10,
-				"id_bill": 8,
-				"id_diningTable": 1,
-				"id_dish": 3,
-				"id_status": 1
-			}
-		];
-
-		self.dishes = [
-			{
-				"id": 1,
-				"name": "penne al sugo",
-				"price": 10
-			},
-			{
-				"id": 2,
-				"name": "lasagna",
-				"price": 12
-			},
-			{
-				"id": 3,
-				"name": "filetto di manzo",
-				"price": 10
-			},
-			{
-				"id": 5,
-				"name": "Gnocchi",
-				"price": 5
-			}
-		];
-
-		self.statuses = [
-		  {
-		    "status": "In Lavorazione",
-		    "id": 2
-		  },
-		  {
-		    "status": "Non Pronto",
-		    "id": 1
-		  },
-		  {
-		    "status": "Pronto",
-		    "id": 3
-		  }
-		];
-
+		self.jobs = [];
 		self.data = [];
+		self.dishes = [];
+		self.statuses = [];
 
-		self.jobs.forEach(function (job, index) {
-			self.data[index] = {};
-			self.data[index].id = job.id;
-			self.data[index].id_diningTable = job.id_diningTable;
+		$http.get("api/dishes/")
+			.then(function success(response) {
+				self.dishes=response.data;
+			}, function error(response) {
 
-			self.data[index].dishName = self.dishes.find(function (dish) {
-				return dish.id == job.id_dish;
-			}).name;
+			});		
 
-			self.data[index].status = job.id_status;
-		});
+		$http.get("api/statuses/")
+			.then(function success(response) {
+				self.statuses=response.data;
+			});
+
+		$http.get("api/jobs/")
+			.then(function success(response) {
+				self.jobs=response.data;
+
+				self.jobs.forEach(function (job, index) {
+					self.data[index] = {};
+					self.data[index].id = job.id;
+					self.data[index].id_diningTable = job.id_diningTable;
+		
+					self.data[index].dishName = self.dishes.find(function (dish) {
+						return dish.id == job.id_dish;
+					}).name;
+		
+					self.data[index].status = job.id_status;
+				});
+			});
 
 		self.gridOptions.data = self.data;
 
