@@ -96,11 +96,6 @@ angular.module('terra&terra')
 				}
 			});
 
-			/*gridApi.edit.on.afterCellEdit($scope, function (rowEntity, colDef, newValue, oldValue) {
-				console.log('edited row id:' + rowEntity.id + ' Column:' + colDef.name + ' newValue:' + newValue + ' oldValue:' + oldValue);
-				//$scope.$apply();
-			});*/
-
 			gridApi.rowEdit.on.saveRow($scope, self.saveRow);
 		};
 

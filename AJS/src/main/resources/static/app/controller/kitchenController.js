@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('terra&terra')
-	.controller('kitchenCtrl', ['$http', '$q', function ($http, $q) {
+	.controller('kitchenCtrl', ['$http', '$q', 'Pubnub', function ($http, $q, Pubnub) {
 		var self = this;
 
 		self.gridOptions = {
@@ -11,7 +11,7 @@ angular.module('terra&terra')
 			enableSelectAll: true,
 			columnDefs: [
 				{
-					name: 'id_diningTable',
+					name: 'diningTable',
 					displayName: 'Tavolo'
 				},
 				{
@@ -22,7 +22,7 @@ angular.module('terra&terra')
 					name: 'actions',
 					displayName: 'Azioni',
 					cellTemplate: '<button ng-if="row.entity.status==2" ng-click="grid.appScope.kitchenController.setStatus(row.entity)" type="button" class="btn btn-outline-dark btn-sm">Pronto</button>'+
-									  '<button ng-if="row.entity.status==1" ng-click="grid.appScope.kitchenController.setStatus(row.entity)" type="button" class="btn btn-outline-dark btn-sm">Prendi in carica</button>'+
+									  '<button ng-if="row.entity.status==1" ng-click="grid.appScope.kitchenController.setStatus(row.entity)" type="button" class="btn btn-outline-dark btn-sm">Prendi in carico</button>'+
 									  '<button ng-if="row.entity.status==3" disabled ng-click="grid.appScope.kitchenController.setStatus(row.entity)" type="button" class="btn btn-outline-dark btn-sm">Da servire</button>',
 					cellClass: 'ui-grid-center-ar',
 				}
@@ -34,13 +34,6 @@ angular.module('terra&terra')
 		self.dishes = [];
 		self.statuses = [];
 
-		$http.get("api/dishes/")
-			.then(function success(response) {
-				self.dishes=response.data;
-			}, function error(response) {
-
-			});		
-
 		$http.get("api/statuses/")
 			.then(function success(response) {
 				self.statuses=response.data;
@@ -49,34 +42,59 @@ angular.module('terra&terra')
 		$http.get("api/jobs/")
 			.then(function success(response) {
 				self.jobs=response.data;
-
-				self.jobs.forEach(function (job, index) {
-					self.data[index] = {};
-					self.data[index].id = job.id;
-					self.data[index].id_diningTable = job.id_diningTable;
-		
-					self.data[index].dishName = self.dishes.find(function (dish) {
-						return dish.id == job.id_dish;
-					}).name;
-		
-					self.data[index].status = job.id_status;
-				});
+				createData();
 			});
 
 		self.gridOptions.data = self.data;
 
-		//console.log(self.gridOptions.data);
+		var createData = function () {
+			$http.get("api/dishes/")
+			.then(function success(response) {
+				self.dishes=response.data;
+
+				self.jobs.forEach(function (job, index) {
+					self.data[index] = {};
+					
+					self.data[index].job = job.id;
+					self.data[index].bill = job.idBill;
+					self.data[index].diningTable = job.idDiningTable;
+					self.data[index].dish = job.idDish;
+					self.data[index].dishName = self.dishes.find(function (dish) {
+						return dish.id == job.idDish;
+					}).name;
+			
+					self.data[index].status = job.idStatus;
+				});
+			}, function error(response) {
+
+			});			
+		};
 
 		self.setStatus = function(rowEntity) {
-			var dataElement = self.gridOptions.data.find(function (element) {
-				return element.id==rowEntity.id;
-			});
 
 			if (rowEntity.status==1) {
-				dataElement.status=2;
+				rowEntity.status=2;
 			} else if (rowEntity.status==2) {
-				dataElement.status=3;
+				rowEntity.status=3;
 			}
+
+			let jobToUpdate = {
+				id: rowEntity.job,
+				idBill: rowEntity.bill,
+				idDiningTable: rowEntity.diningTable,
+				idDish: rowEntity.dish,
+				idStatus: rowEntity.status
+			};
+
+			console.log("jobToUpdate", jobToUpdate);
+
+			$http.post("api/jobs/", jobToUpdate)
+				.then(function success(response) {
+					console.log("response data", response.data);
+
+				}, function error(response) {
+
+				});
 		}
 
 	}]);
