@@ -23,6 +23,12 @@
 	<dependencies>
 
 		<dependency>
+			<groupId>com.pubnub</groupId>
+			<artifactId>pubnub-gson</artifactId>
+			<version>4.24.0</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
