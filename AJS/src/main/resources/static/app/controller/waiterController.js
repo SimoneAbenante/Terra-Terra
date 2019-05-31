@@ -4,7 +4,7 @@ angular.module('terra&terra')
 	.controller('waiterCtrl', ['$http', 'Pubnub', '$scope','$rootScope', function ($http, Pubnub, $scope, $rootScope) {
 		var self = this;
 
-		self.pub = function() {
+		/*self.pub = function() {
 			Pubnub.publish(
 				{
 					 channel: 'awesomeChannel',
@@ -31,7 +31,7 @@ angular.module('terra&terra')
 					$scope.statusSentSuccessfully = true;
 				}
 			})
-		});
+		});*/
 
 		self.gridOptions = {
 			enableRowSelection: false,

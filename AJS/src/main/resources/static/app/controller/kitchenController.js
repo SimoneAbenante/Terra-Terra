@@ -3,6 +3,7 @@
 angular.module('terra&terra')
 	.controller('kitchenCtrl', ['$http', 'Pubnub', '$scope', function ($http, Pubnub, $scope) {
 		var self = this;
+		var nJobs = 0;
 
 		/*$scope.subscribe = function () {
 			Pubnub.subscribe({
@@ -41,7 +42,11 @@ angular.module('terra&terra')
 		$scope.$on(Pubnub.getMessageEventNameFor('awesomeChannel'), function (ngEvent, envelope) {
 			$scope.$apply(function () {
 				console.log("envelope", envelope.message);
-				self.gridOptions.data.push(envelope.message);
+				//self.gridOptions.data.push(envelope.message);
+
+				if (envelope.message.jobs > nJobs) {
+					loadData();
+				}
 			});
 	  });
 
@@ -90,15 +95,19 @@ angular.module('terra&terra')
 				self.statuses = response.data;
 			});
 
-		$http.get("api/jobs/")
+		
+		
+		var loadData = function () {
+			$http.get("api/jobs/")
 			.then(function success(response) {
 				self.jobs = response.data;
 				createData();
 			});
 
 		self.gridOptions.data = self.data;
+		};
 
-		console.log(self.gridOptions.data);
+		loadData();
 
 		var createData = function () {
 			$http.get("api/dishes/")
