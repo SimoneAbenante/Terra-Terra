@@ -1,8 +1,37 @@
 'use strict';
 
 angular.module('terra&terra')
-	.controller('waiterCtrl', ['$http', function ($http) {
+	.controller('waiterCtrl', ['$http', 'Pubnub', '$scope','$rootScope', function ($http, Pubnub, $scope, $rootScope) {
 		var self = this;
+
+		self.pub = function() {
+			Pubnub.publish(
+				{
+					 channel: 'awesomeChannel',
+					 message: '{"size": 3}'
+				}, 
+				function(status, response){
+					 console.log(response);
+				}
+		  );
+		};
+
+		$rootScope.$on(Pubnub.getMessageEventNameFor('awesomeChannel'), function (ngEvent, envelope) {
+			$scope.$apply(function () {
+				// add message to the messages list
+				$scope.chatMessages.unshift(envelope.message);
+			});
+		});
+
+		$rootScope.$on(Pubnub.getEventNameFor('publish', 'callback'), function (ngEvent, status, response) {
+			$scope.$apply(function () {
+				if (status.error) {
+					$scope.statusSentSuccessfully = false;
+				} else {
+					$scope.statusSentSuccessfully = true;
+				}
+			})
+		});
 
 		self.gridOptions = {
 			enableRowSelection: false,
@@ -104,7 +133,7 @@ angular.module('terra&terra')
 			} else {
 				console.log(list);
 
-				$http.post("api/jobs/params", {params: {idBill: userID}})
+				$http.post("api/jobs/params", { params: { idBill: userID } })
 					.then(function success(response) {
 
 					});
@@ -128,14 +157,14 @@ angular.module('terra&terra')
 				{
 					name: 'action',
 					displayName: 'Servito',
-					cellTemplate: '<div class="form-check"><input class="form-check-input"'+
-										' type="checkbox" id="servito"></div>',
+					cellTemplate: '<div class="form-check"><input class="form-check-input"' +
+						' type="checkbox" id="servito"></div>',
 					//cellClass: 'ui-grid-center-ar'
 				}
 			]
 		};
 
-		self.change =function (rowEntity) {
+		self.change = function (rowEntity) {
 
 			console.log(rowEntity);
 
@@ -146,10 +175,10 @@ angular.module('terra&terra')
 					rowEntity.served=false;
 				else
 					rowEntity.served=true;*/
-					rowEntity.served = false;
-					alert("Piatto impostato a non servito");
+				rowEntity.served = false;
+				alert("Piatto impostato a non servito");
 			} else {
-				rowEntity.served=true;
+				rowEntity.served = true;
 				alert("Piatto impostato a servito");
 			}
 
@@ -167,11 +196,11 @@ angular.module('terra&terra')
 					let rowEntity = {};
 
 					rowEntity.index = index;
-		
+
 					rowEntity.name = dishes.find(function (dish) {
 						return job.idDish == dish.id;
 					}).name;
-		
+
 					rowEntity.table = job.idDiningTable;
 					rowEntity.served = true;
 
