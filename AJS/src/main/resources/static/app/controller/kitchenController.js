@@ -1,18 +1,73 @@
 'use strict';
 
 angular.module('terra&terra')
-	.controller('kitchenCtrl', ['$http', function ($http) {
+	.controller('kitchenCtrl', ['$http', 'Pubnub', '$scope', function ($http, Pubnub, $scope) {
 		var self = this;
-		self.action='Prendi in carica';
+		var nJobs = 0;
+
+		/*$scope.subscribe = function () {
+			Pubnub.subscribe({
+				channel: 'awesomeChannel',
+				triggerEvents: ['message']
+			})
+		};*/
+
+		// Subscribe to a channel
+		Pubnub.addListener({
+			status: function (statusEvent) {
+				if (statusEvent.category === "PNUnknownCategory") {
+					var newState = {
+						new: 'error'
+					};
+					Pubnub.setState(
+						{
+							state: newState
+						},
+						function (status) {
+							console.log(statusEvent.errorData.message)
+						}
+					);
+				}
+			},
+			message: function (message) {
+				console.log(message.message);
+			}
+		})
+
+		Pubnub.subscribe({
+			channels: ['awesomeChannel'],
+			triggerEvents: ['message']
+		});
+
+		$scope.$on(Pubnub.getMessageEventNameFor('awesomeChannel'), function (ngEvent, envelope) {
+			$scope.$apply(function () {
+				console.log("envelope", envelope.message);
+				//self.gridOptions.data.push(envelope.message);
+
+				if (envelope.message.jobs > nJobs) {
+					loadData();
+				}
+			});
+	  });
+
+		$scope.msg={};
+
+		self.addJob = function(msg) {
+			$scope.msg = msg;
+			console.log($scope.msg);
+		}
+
+		self.data = [];
 
 		self.gridOptions = {
+			data: 'data',
 			enableRowSelection: true,
 			enableRowHeaderSelection: true,
 			multiSelect: true,
 			enableSelectAll: true,
 			columnDefs: [
 				{
-					name: 'id_diningTable',
+					name: 'diningTable',
 					displayName: 'Tavolo'
 				},
 				{
@@ -22,104 +77,86 @@ angular.module('terra&terra')
 				{
 					name: 'actions',
 					displayName: 'Azioni',
-					cellTemplate: '<button ng-if="row.entity.status==2" ng-click="grid.appScope.kitchenController.setStatus(row.entity)" type="button" class="btn btn-outline-dark btn-sm">Pronto</button>'+
-									  '<button ng-if="row.entity.status==1" ng-click="grid.appScope.kitchenController.setStatus(row.entity)" type="button" class="btn btn-outline-dark btn-sm">Prendi in carica</button>'+
-									  '<button ng-if="row.entity.status==3" disabled ng-click="grid.appScope.kitchenController.setStatus(row.entity)" type="button" class="btn btn-outline-dark btn-sm">Da servire</button>',
+					cellTemplate: '<button ng-if="row.entity.status==2" ng-click="grid.appScope.kitchenController.setStatus(row.entity)" type="button" class="btn btn-outline-dark btn-sm">Pronto</button>' +
+						'<button ng-if="row.entity.status==1" ng-click="grid.appScope.kitchenController.setStatus(row.entity)" type="button" class="btn btn-outline-dark btn-sm">Prendi in carico</button>' +
+						'<button ng-if="row.entity.status==3" disabled ng-click="grid.appScope.kitchenController.setStatus(row.entity)" type="button" class="btn btn-outline-dark btn-sm">Da servire</button>',
 					cellClass: 'ui-grid-center-ar',
 				}
 			]
 		};
 
-		self.jobs = [
-			{
-				"id": 8,
-				"id_bill": 6,
-				"id_diningTable": 3,
-				"id_dish": 1,
-				"id_status": 3
-			},
-			{
-				"id": 9,
-				"id_bill": 7,
-				"id_diningTable": 1,
-				"id_dish": 2,
-				"id_status": 3
-			},
-			{
-				"id": 10,
-				"id_bill": 8,
-				"id_diningTable": 1,
-				"id_dish": 3,
-				"id_status": 1
-			}
-		];
+		self.jobs = [];
+		
+		self.dishes = [];
+		self.statuses = [];
 
-		self.dishes = [
-			{
-				"id": 1,
-				"name": "penne al sugo",
-				"price": 10
-			},
-			{
-				"id": 2,
-				"name": "lasagna",
-				"price": 12
-			},
-			{
-				"id": 3,
-				"name": "filetto di manzo",
-				"price": 10
-			},
-			{
-				"id": 5,
-				"name": "Gnocchi",
-				"price": 5
-			}
-		];
-
-		self.statuses = [
-		  {
-		    "status": "In Lavorazione",
-		    "id": 2
-		  },
-		  {
-		    "status": "Non Pronto",
-		    "id": 1
-		  },
-		  {
-		    "status": "Pronto",
-		    "id": 3
-		  }
-		];
-
-		self.data = [];
-
-		self.jobs.forEach(function (job, index) {
-			self.data[index] = {};
-			self.data[index].id = job.id;
-			self.data[index].id_diningTable = job.id_diningTable;
-
-			self.data[index].dishName = self.dishes.find(function (dish) {
-				return dish.id == job.id_dish;
-			}).name;
-
-			self.data[index].status = job.id_status;
-		});
-
-		self.gridOptions.data = self.data;
-
-		//console.log(self.gridOptions.data);
-
-		self.setStatus = function(rowEntity) {
-			var dataElement = self.gridOptions.data.find(function (element) {
-				return element.id==rowEntity.id;
+		$http.get("api/statuses/")
+			.then(function success(response) {
+				self.statuses = response.data;
 			});
 
-			if (rowEntity.status==1) {
-				dataElement.status=2;
-			} else if (rowEntity.status==2) {
-				dataElement.status=3;
+		
+		
+		var loadData = function () {
+			$http.get("api/jobs/")
+			.then(function success(response) {
+				self.jobs = response.data;
+				createData();
+			});
+
+		self.gridOptions.data = self.data;
+		};
+
+		loadData();
+
+		var createData = function () {
+			$http.get("api/dishes/")
+				.then(function success(response) {
+					self.dishes = response.data;
+
+					self.jobs.forEach(function (job, index) {
+						self.data[index] = {};
+
+						self.data[index].job = job.id;
+						self.data[index].bill = job.idBill;
+						self.data[index].diningTable = job.idDiningTable;
+						self.data[index].dish = job.idDish;
+						self.data[index].dishName = self.dishes.find(function (dish) {
+							return dish.id == job.idDish;
+						}).name;
+
+						self.data[index].status = job.idStatus;
+					});
+				}, function error(response) {
+
+				});
+		};
+
+		self.setStatus = function (rowEntity) {
+
+			if (rowEntity.status == 1) {
+				rowEntity.status = 2;
+			} else if (rowEntity.status == 2) {
+				rowEntity.status = 3;
 			}
+
+			let jobToUpdate = {
+				id: rowEntity.job,
+				idBill: rowEntity.bill,
+				idDiningTable: rowEntity.diningTable,
+				idDish: rowEntity.dish,
+				idStatus: rowEntity.status
+			};
+
+			console.log("jobToUpdate", jobToUpdate);
+
+			$http.post("api/jobs/", jobToUpdate)
+				.then(function success(response) {
+					console.log("response data", response.data);
+
+				}, function error(response) {
+
+				});
 		}
 
 	}]);

@@ -1,6 +1,6 @@
 'use strict';
 
-var tt = angular.module('terra&terra', ['ngRoute', 'ui.grid', 'ui.grid.selection', 'ui.grid.edit', 'ui.grid.rowEdit', 'ui.grid.cellNav', 'ui.grid.resizeColumns']);
+var tt = angular.module('terra&terra', ['ngRoute', 'ui.grid', 'ui.grid.selection', 'ui.grid.edit', 'ui.grid.rowEdit', 'ui.grid.cellNav', 'ui.grid.resizeColumns', 'pubnub.angular.service']);
 
 tt.config(function ($routeProvider) {
 	$routeProvider
@@ -35,3 +35,10 @@ tt.config(function ($routeProvider) {
 			controllerAs: "kitchenController"
 		})
 });
+
+tt.run(['Pubnub', function (Pubnub) {
+	Pubnub.init({
+		 publishKey : 'pub-c-a19b1d0f-ca7f-47fd-8f0e-a09206fa62f1',
+		 subscribeKey : 'sub-c-aef1ccd4-8377-11e9-99de-d6d3b84c4a25'
+	});
+}]);
