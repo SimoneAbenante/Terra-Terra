@@ -27,8 +27,8 @@ public class DishService implements InterfaceService<Dish> {
 
 	@Override
 	public Dish getEntity(Integer id) throws LocalException {
-		Dish dish = new Dish();
 		if (isValidId(id)) {
+			Dish dish = new Dish();
 			dishRepository.findById(id).ifPresent(e -> {
 				dish.setId(e.getId());
 				dish.setName(e.getName());
@@ -60,21 +60,24 @@ public class DishService implements InterfaceService<Dish> {
 
 	@Override
 	public Dish saveEntity(Dish dish) throws LocalException {
-		Dish d = dishRepository.save(dish);
-		if (d != null)
-			return d;
+		if (dish != null) {
+			Dish d = dishRepository.save(dish);
+			if (d != null)
+				return d;
+		}
 		throw new LocalException(setFailMessage);
 	}
 
 	@Override
 	public List<Dish> saveEntityList(List<Dish> listDish) throws LocalException {
-		if (listDish.isEmpty())
-			throw new LocalException(deleteFailMessage);
-		List<Dish> list = new ArrayList<>();
-		for (Dish dish : listDish) {
-			list.add(saveEntity(dish));
+		if (!listDish.isEmpty()) {
+			List<Dish> list = new ArrayList<>();
+			for (Dish dish : listDish) {
+				list.add(saveEntity(dish));
+			}
+			return list;
 		}
-		return list;
+		throw new LocalException(setListFailMessage);
 	}
 
 	@Override

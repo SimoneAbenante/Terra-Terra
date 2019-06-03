@@ -41,8 +41,8 @@ public class JobService implements InterfaceService<Job> {
 
 	@Override
 	public Job getEntity(Integer id) throws LocalException {
-		Job job = new Job();
 		if (isValidId(id)) {
+			Job job = new Job();
 			jobRepository.findById(id).ifPresent(e -> {
 				job.setId(e.getId());
 				job.setBill(e.getBill());
@@ -76,21 +76,26 @@ public class JobService implements InterfaceService<Job> {
 
 	@Override
 	public Job saveEntity(Job job) throws LocalException {
-		Job j = jobRepository.save(job);
-		if (j != null)
-			return j;
+		if (job != null) {
+			if (!isPositiveId(job.getStatus().getId()))
+				setStatusOfEntity(job.getId(), 3);
+			Job j = jobRepository.save(job);
+			if (j != null)
+				return j;
+		}
 		throw new LocalException(setFailMessage);
 	}
 
 	@Override
 	public List<Job> saveEntityList(List<Job> listJob) throws LocalException {
-		if (listJob.isEmpty())
-			throw new LocalException(deleteFailMessage);
-		List<Job> list = new ArrayList<>();
-		for (Job job : listJob) {
-			list.add(saveEntity(job));
+		if (!listJob.isEmpty()) {
+			List<Job> list = new ArrayList<>();
+			for (Job job : listJob) {
+				list.add(saveEntity(job));
+			}
+			return list;
 		}
-		return list;
+		throw new LocalException(setListFailMessage);
 	}
 
 	@Override

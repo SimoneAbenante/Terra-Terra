@@ -71,9 +71,9 @@ public class JobController implements InterfaceController<JobDto> {
 		return jobConverter.getDtoListFromEntityList(jobService.setStatusOfAllEntity(idStatus));
 	}
 
-	@PostMapping(value = "/status/{idTable}", produces = "application/json")
-	public JobDto setStatus(@PathVariable Integer idTable, @RequestParam Integer idStatus) throws LocalException {
-		return jobConverter.getDtoFromEntity(jobService.setStatusOfEntity(idTable, idStatus));
+	@PostMapping(value = "/status/{idJob}", produces = "application/json")
+	public JobDto setStatus(@PathVariable Integer idJob, @RequestParam Integer idStatus) throws LocalException {
+		return jobConverter.getDtoFromEntity(jobService.setStatusOfEntity(idJob, idStatus));
 	}
 
 	@Deprecated

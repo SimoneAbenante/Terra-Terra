@@ -30,8 +30,8 @@ public class StatusService implements InterfaceService<Status> {
 
 	@Override
 	public Status getEntity(Integer id) throws LocalException {
-		Status status = new Status();
 		if (isValidId(id)) {
+			Status status = new Status();
 			statusRepository.findById(id).ifPresent(e -> {
 				status.setId(e.getId());
 				status.setStatus(e.getStatus());
@@ -62,21 +62,24 @@ public class StatusService implements InterfaceService<Status> {
 
 	@Override
 	public Status saveEntity(Status status) throws LocalException {
-		Status s = statusRepository.save(status);
-		if (s != null)
-			return s;
+		if (status != null) {
+			Status s = statusRepository.save(status);
+			if (s != null)
+				return s;
+		}
 		throw new LocalException(setFailMessage);
 	}
 
 	@Override
 	public List<Status> saveEntityList(List<Status> listStatus) throws LocalException {
-		if (listStatus.isEmpty())
-			throw new LocalException(deleteFailMessage);
-		List<Status> list = new ArrayList<>();
-		for (Status status : listStatus) {
-			list.add(saveEntity(status));
+		if (!listStatus.isEmpty()) {
+			List<Status> list = new ArrayList<>();
+			for (Status status : listStatus) {
+				list.add(saveEntity(status));
+			}
+			return list;
 		}
-		return list;
+		throw new LocalException(setListFailMessage);
 	}
 
 	@Override

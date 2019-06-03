@@ -36,8 +36,8 @@ public class BillService implements InterfaceService<Bill> {
 
 	@Override
 	public Bill getEntity(Integer id) throws LocalException {
-		Bill bill = new Bill();
 		if (isValidId(id)) {
+			Bill bill = new Bill();
 			billRepository.findById(id).ifPresent(e -> {
 				bill.setId(e.getId());
 				bill.setPaymentMethod(e.getPaymentMethod());
@@ -69,21 +69,24 @@ public class BillService implements InterfaceService<Bill> {
 
 	@Override
 	public Bill saveEntity(Bill bill) throws LocalException {
-		Bill b = billRepository.save(bill);
-		if (b != null)
-			return b;
+		if (bill != null) {
+			Bill b = billRepository.save(bill);
+			if (b != null)
+				return b;
+		}
 		throw new LocalException(setFailMessage);
 	}
 
 	@Override
 	public List<Bill> saveEntityList(List<Bill> listBill) throws LocalException {
-		if (listBill.isEmpty())
-			throw new LocalException(deleteFailMessage);
-		List<Bill> list = new ArrayList<>();
-		for (Bill bill : listBill) {
-			list.add(saveEntity(bill));
+		if (!listBill.isEmpty()) {
+			List<Bill> list = new ArrayList<>();
+			for (Bill bill : listBill) {
+				list.add(saveEntity(bill));
+			}
+			return list;
 		}
-		return list;
+		throw new LocalException(setListFailMessage);
 	}
 
 	@Override
