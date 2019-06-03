@@ -18,7 +18,7 @@ public class JobDto implements InterfaceDto {
 
 	public JobDto() {
 		super();
-		setAll(defaultId, defaultId, defaultId, defaultId, defaultId);
+		setAll(defaultId, defaultId, defaultId, defaultId, defaultStatus);
 	}
 
 	public Integer getId() {

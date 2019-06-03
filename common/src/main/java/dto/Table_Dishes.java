@@ -14,25 +14,26 @@ public class Table_Dishes implements InterfaceDto {
 	 */
 	private static final long serialVersionUID = 5308201633252560079L;
 
-	private Integer idDiningTable;
+	private Integer id;
 	private List<Integer> dishes;
 
 	public Table_Dishes() {
 		super();
-		setIdDiningTable(defaultId);
+		setId(defaultId);
 		this.dishes = new ArrayList<>();
 	}
 
-	public Integer getIdDiningTable() {
-		return idDiningTable;
+	@Override
+	public Integer getId() {
+		return id;
 	}
 
-	public void setIdDiningTable(Integer idDiningTable) {
+	public void setId(Integer id) {
 		try {
-			if (isValidInteger(idDiningTable))
-				this.idDiningTable = idDiningTable;
+			if (isValidInteger(id))
+				this.id = id;
 		} catch (LocalException ex) {
-			this.idDiningTable = defaultId;
+			this.id = defaultId;
 			ex.setMessage(setFailMessage);
 			ex.getMessage();
 			ex.getStackTrace();
@@ -53,11 +54,6 @@ public class Table_Dishes implements InterfaceDto {
 			ex.getMessage();
 			ex.getStackTrace();
 		}
-	}
-
-	@Override
-	public Integer getId() {
-		return 0;
 	}
 
 }

@@ -4,12 +4,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import dto.BillDto;
 import exception.LocalException;
 import it.ttsolution.form.tt.api.controller.interfaces.InterfaceController;
 import it.ttsolution.form.tt.api.converter.BillConverter;
 import it.ttsolution.form.tt.api.service.BillService;
 
+@RestController
 @RequestMapping("/bills")
 public class BillController implements InterfaceController<BillDto> {
 
