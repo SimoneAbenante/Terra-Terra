@@ -60,11 +60,24 @@ public class DiningTableController implements InterfaceController<DiningTableDto
 	public List<DiningTableDto> setAllStatus(@RequestParam Integer idStatus) throws LocalException {
 		return diningTableConverter.getDtoListFromEntityList(diningTableService.setStatusOfAllDiningTables(idStatus));
 	}
+	
+	@Deprecated
+	@PostMapping(value = "/dto/status/all", produces = "application/json")
+	public Boolean setAllStatusReturnBoolean(@RequestParam Integer idStatus) throws LocalException {
+		return diningTableService.setStatusOfAllDiningTablesReturnBoolean(idStatus);
+	}
 
-	@PostMapping(value = "/status/{idTable}", produces = "application/json")
+	@PostMapping(value = "/dto/status/{idTable}", produces = "application/json")
 	public DiningTableDto setStatus(@PathVariable Integer idTable, @RequestParam Integer idStatus)
 			throws LocalException {
 		return diningTableConverter.getDtoFromEntity(diningTableService.setStatusOfDiningTable(idTable, idStatus));
+	}
+	
+	@Deprecated
+	@PostMapping(value = "/status/{idTable}", produces = "application/json")
+	public Boolean setStatusReturnBoolean(@PathVariable Integer idTable, @RequestParam Integer idStatus)
+			throws LocalException {
+		return diningTableService.setStatusOfDiningTableReturnBoolean(idTable, idStatus);
 	}
 
 }

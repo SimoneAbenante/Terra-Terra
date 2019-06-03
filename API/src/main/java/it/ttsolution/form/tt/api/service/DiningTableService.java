@@ -102,6 +102,18 @@ public class DiningTableService implements InterfaceService<DiningTable> {
 		}
 		throw new LocalException(statusSetFailMessage);
 	}
+	
+	@Deprecated
+	public Boolean setStatusOfDiningTableReturnBoolean(Integer idTable, Integer idStatus) throws LocalException {
+		if (isValidId(idTable) & statusService.isValidId(idStatus)) {
+			DiningTable diningTable;
+			diningTable = getEntity(idTable);
+			diningTable.setStatus(statusService.getEntity(idStatus));
+			saveEntity(diningTable);
+			return true;
+		}
+		throw new LocalException(statusSetFailMessage);
+	}
 
 	public List<DiningTable> setStatusOfAllDiningTables(Integer idStatus) throws LocalException {
 		if (statusService.isValidId(idStatus)) {
@@ -112,6 +124,19 @@ public class DiningTableService implements InterfaceService<DiningTable> {
 				list.add(saveEntity(diningTable));
 			}
 			return list;
+		}
+		throw new LocalException(statusSetFailMessage);
+	}
+	
+	@Deprecated
+	public Boolean setStatusOfAllDiningTablesReturnBoolean(Integer idStatus) throws LocalException {
+		if (statusService.isValidId(idStatus)) {
+			List<DiningTable> listDiningTable = getAllEntityAsList();
+			for (DiningTable diningTable : listDiningTable) {
+				diningTable.setStatus(statusService.getEntity(idStatus));
+				saveEntity(diningTable);
+			}
+			return true;
 		}
 		throw new LocalException(statusSetFailMessage);
 	}

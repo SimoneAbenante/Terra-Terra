@@ -84,10 +84,18 @@ public interface TT_API_Feign {
 	public Boolean deleteAllDiningTable();
 	
 	@PostMapping(value = "/tables/status/{idTable}", produces = "application/json")
-	public DiningTableDto setDiningTableStatus(@PathVariable Integer idTable, @RequestParam Integer idStatus);
+	public DiningTableDto setDiningTableStatusAsDto(@PathVariable Integer idTable, @RequestParam Integer idStatus);
 	
+	@Deprecated
+	@PostMapping(value = "/tables/dto/status/{idTable}", produces = "application/json")
+	public Boolean setDiningTableStatus(@PathVariable Integer idTable, @RequestParam Integer idStatus);
+	
+	@PostMapping(value = "/tables/dto/status/all", produces = "application/json")
+	public List<DiningTableDto> setAllDiningTableStatusAsList(@RequestParam Integer idStatus);
+	
+	@Deprecated
 	@PostMapping(value = "/tables/status/all", produces = "application/json")
-	public List<DiningTableDto> setAllDiningTableStatus(@RequestParam Integer idStatus);
+	public Boolean setAllDiningTableStatus(@RequestParam Integer idStatus);
 	
 //Job Controller
 	

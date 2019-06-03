@@ -9,6 +9,7 @@ import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.models.consumer.PNPublishResult;
 import com.pubnub.api.models.consumer.PNStatus;
 
+import exception.LocalException;
 import it.ttsolution.form.tt.api.service.JobService;
 
 public class PeriodicJobUpdater {
@@ -31,9 +32,9 @@ public class PeriodicJobUpdater {
 	};
 
 	@Scheduled(fixedRateString = "5000")
-	public void checkJobsUpdate() {
+	public void checkJobsUpdate() throws LocalException {
 
-		int newSize = service.getAllJobsAsDtoList().size();
+		int newSize = service.getAllEntityAsList().size();
 
 		if (newSize > size) {
 
