@@ -1,6 +1,9 @@
-package it.ttsolution.form.tt.api.dao;
+package it.ttsolution.form.tt.api.entity;
 
 import javax.persistence.*;
+
+import it.ttsolution.form.tt.api.entity.interfaces.InterfaceEntity;
+
 import java.util.List;
 
 
@@ -10,7 +13,7 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Bill.findAll", query="SELECT b FROM Bill b")
-public class Bill implements it.ttsolution.form.tt.api.dao.interfaces.InterfaceDao {
+public class Bill implements InterfaceEntity{
 	private static final long serialVersionUID = 1L;
 
 	@Id

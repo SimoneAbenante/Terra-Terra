@@ -1,28 +1,34 @@
-package it.ttsolution.form.tt.api.dao;
+package it.ttsolution.form.tt.api.entity;
 
 import javax.persistence.*;
+
+import it.ttsolution.form.tt.api.entity.interfaces.InterfaceEntity;
+
 import java.util.List;
 
+
 /**
- * The persistent class for the status database table.
+ * The persistent class for the dish database table.
  * 
  */
 @Entity
-@NamedQuery(name="Status.findAll", query="SELECT s FROM Status s")
-public class Status implements it.ttsolution.form.tt.api.dao.interfaces.InterfaceDao {
+@NamedQuery(name="Dish.findAll", query="SELECT d FROM Dish d")
+public class Dish implements InterfaceEntity {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 
-	private String status;
+	private String name;
+
+	private Double price;
 
 	//bi-directional many-to-one association to Job
-	@OneToMany(mappedBy="status")
+	@OneToMany(mappedBy="dish")
 	private List<Job> jobs;
 
-	public Status() {
+	public Dish() {
 	}
 
 	public Integer getId() {
@@ -33,12 +39,20 @@ public class Status implements it.ttsolution.form.tt.api.dao.interfaces.Interfac
 		this.id = id;
 	}
 
-	public String getStatus() {
-		return this.status;
+	public String getName() {
+		return this.name;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Double getPrice() {
+		return this.price;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
 	}
 
 	public List<Job> getJobs() {
@@ -51,14 +65,14 @@ public class Status implements it.ttsolution.form.tt.api.dao.interfaces.Interfac
 
 	public Job addJob(Job job) {
 		getJobs().add(job);
-		job.setStatus(this);
+		job.setDish(this);
 
 		return job;
 	}
 
 	public Job removeJob(Job job) {
 		getJobs().remove(job);
-		job.setStatus(null);
+		job.setDish(null);
 
 		return job;
 	}

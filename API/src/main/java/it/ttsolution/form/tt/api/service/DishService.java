@@ -6,83 +6,80 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dto.DishDto;
-import it.ttsolution.form.tt.api.dao.Dish;
+import exception.LocalException;
+import it.ttsolution.form.tt.api.entity.Dish;
 import it.ttsolution.form.tt.api.repository.DishRepository;
 import it.ttsolution.form.tt.api.service.interfaces.InterfaceService;
 
 @Service
-public class DishService implements InterfaceService {
+public class DishService implements InterfaceService<Dish> {
 
 	@Autowired
 	DishRepository dishRepository;
-	
-//Metodi Controller
 
-	public List<DishDto> getAllDishesAsDtoList() {
-		List<DishDto> listDishDto = new ArrayList<>();
-		dishRepository.findAll().forEach(e -> listDishDto.add(fromDaoToDto(e)));
-		return listDishDto;
+	@Override
+	public List<Dish> getAllEntityAsList() throws LocalException {
+		List<Dish> listDish = dishRepository.findAll();
+		if (!listDish.isEmpty())
+			return listDish;
+		throw new LocalException(getAllFailMessage);
 	}
 
-	public DishDto getDishAsDto(Integer id) {
-		DishDto dishDto = new DishDto();
-		if (isExistingId(id))
-			dishRepository.findById(id).ifPresent(e -> dishDto.setAll(e.getId(), e.getName(), e.getPrice()));
-		return dishDto;
+	@Override
+	public Dish getEntity(Integer id) throws LocalException {
+		Dish dish = new Dish();
+		if (isValidId(id)) {
+			dishRepository.findById(id).ifPresent(e -> {
+				dish.setId(e.getId());
+				dish.setName(e.getName());
+				dish.setPrice(e.getPrice());
+			});
+			return dish;
+		}
+		throw new LocalException(getFailMessage);
 	}
 
-	public Boolean deleteDish(Integer id) {
-		if (isExistingId(id)) {
+	@Override
+	public Boolean deleteEntity(Integer id) throws LocalException {
+		if (isValidId(id)) {
 			dishRepository.deleteById(id);
 			return true;
 		}
-		return false;
+		throw new LocalException(deleteFailMessage);
 	}
 
-	public DishDto saveDish(DishDto dishDto) {
-		return fromDaoToDto(dishRepository.save(fromDtoToDao(dishDto)));
+	@Override
+	public Boolean deleteAllEntity() throws LocalException {
+		List<Dish> listDish = getAllEntityAsList();
+		for (Dish dish : listDish) {
+			if (deleteEntity(dish.getId()))
+				throw new LocalException(deleteAllFailMessage);
+		}
+		return true;
 	}
 
-// Metodi di supporto
-
-	DishDto fromDaoToDto(Dish dish) {
-		DishDto dto = new DishDto();
-		dto.setAll(dish.getId(), dish.getName(), dish.getPrice());
-		return dto;
+	@Override
+	public Dish saveEntity(Dish dish) throws LocalException {
+		Dish d = dishRepository.save(dish);
+		if (d != null)
+			return d;
+		throw new LocalException(setFailMessage);
 	}
 
-	Dish fromDtoToDao(DishDto dishDto) {
-		Dish dao;
-		dao = setAllDaoParams(dishDto.getId(), dishDto.getName(), dishDto.getPrice());
-		return dao;
+	@Override
+	public List<Dish> saveEntityList(List<Dish> listDish) throws LocalException {
+		if (listDish.isEmpty())
+			throw new LocalException(deleteFailMessage);
+		List<Dish> list = new ArrayList<>();
+		for (Dish dish : listDish) {
+			list.add(saveEntity(dish));
+		}
+		return list;
 	}
 
-	Dish setAllDaoParams(Integer id, String name, Double price) {
-		Dish dao = new Dish();
-		if (isPositiveId(id))
-			dao.setId(id);
-		else
-			dao.setId(0);
-		dao.setName(name);
-		dao.setPrice(price);
-		return dao;
-	}
-
-	Integer getIdFromDish(Dish dish) {
-		return dish.getId();
-	}
-
-	Dish getDishFromId(Integer id) {
-		return fromDtoToDao(getDishAsDto(id));
-	}
-
-	Double getPriceFromDishId(Integer idDish) {
-		return getDishAsDto(idDish).getPrice();
-	}
-
-	public Boolean isExistingId(Integer id) {
-		if (id != null && dishRepository.existsById(id))
+	@Override
+	public Boolean isValidId(Integer id) throws LocalException {
+		if (isPositiveId(id) & dishRepository.existsById(id))
 			return true;
 		return false;
 	}

@@ -1,13 +1,13 @@
 package it.ttsolution.form.tt.api.repository;
 
-import java.util.List;
-
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import it.ttsolution.form.tt.api.dao.Bill;
+import it.ttsolution.form.tt.api.entity.Bill;
+import it.ttsolution.form.tt.api.repository.interfaces.InterfaceRepository;
 
 @Repository
-public interface BillRepository extends CrudRepository<Bill, Integer>{
-	List<Bill> findAll();
+public interface BillRepository extends InterfaceRepository<Bill>{
+	
+	
+	
 }

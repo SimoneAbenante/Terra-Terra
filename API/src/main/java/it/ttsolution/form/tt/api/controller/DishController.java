@@ -3,43 +3,52 @@ package it.ttsolution.form.tt.api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dto.DishDto;
+import exception.LocalException;
+import it.ttsolution.form.tt.api.controller.interfaces.InterfaceController;
+import it.ttsolution.form.tt.api.converter.DishConverter;
 import it.ttsolution.form.tt.api.service.DishService;
 
-
-@RequestMapping("/dishes")
 @RestController
-public class DishController {
+@RequestMapping("/dishes")
+public class DishController implements InterfaceController<DishDto>{
 	
 	@Autowired
-	public DishService dishService;
+	DishService dishService;
+	@Autowired
+	DishConverter dishConverter;
 
-	@GetMapping(value = "/", produces = "application/json")
-	public List<DishDto> getAllDish() {
-		return dishService.getAllDishesAsDtoList();
+	@Override
+	public List<DishDto> getAll() throws LocalException {
+		return dishConverter.getDtoListFromEntityList(dishService.getAllEntityAsList());
 	}
 	
-	@GetMapping(value = "/{id}", produces = "application/json")
-	public DishDto getDishById(@PathVariable Integer id) {
-		return dishService.getDishAsDto(id);
+	@Override
+	public DishDto getById(Integer id) throws LocalException {
+		return dishConverter.getDtoFromEntity(dishService.getEntity(id));
 	}
 	
-	@PostMapping(value = "/", produces = "application/json")
-	public DishDto saveDish(@RequestBody DishDto dto) {
-		return dishService.saveDish(dto);
+	@Override
+	public DishDto save(DishDto dto) throws LocalException {
+		return dishConverter.getDtoFromEntity(dishService.saveEntity(dishConverter.getEntityFromDto(dto)));
 	}
 	
-	@DeleteMapping(value = "/{id}", produces = "application/json")
-	public Boolean deleteDish(@PathVariable Integer id) {
-		return dishService.deleteDish(id);
+	@Override
+	public List<DishDto> saveAll(List<DishDto> listDto) throws LocalException {
+		return dishConverter.getDtoListFromEntityList(dishService.saveEntityList(dishConverter.getEntityListFromDtoList(listDto)));
+	}
+	
+	@Override
+	public Boolean delete(Integer id) throws LocalException {
+		return dishService.deleteEntity(id);
+	}
+	
+	@Override
+	public Boolean deleteAll() throws LocalException {
+		return dishService.deleteAllEntity();
 	}
 	
 }

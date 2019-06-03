@@ -29,7 +29,7 @@ public class DishControllerTest {
 	public void testGetAllDish() throws Exception {
 		mockMvc = MockMvcBuilders.standaloneSetup(dishController).build();
 		mockMvc.perform(get("/dishes/")).andExpect(status().isOk()).andExpect(content()
-				.string(containsString("penne al sugo")));
+				.string(containsString("id")));
 	}
 
 }

@@ -6,81 +6,82 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dto.StatusDto;
-import it.ttsolution.form.tt.api.dao.Status;
+import exception.LocalException;
+import it.ttsolution.form.tt.api.entity.Status;
 import it.ttsolution.form.tt.api.repository.StatusRepository;
 import it.ttsolution.form.tt.api.service.interfaces.InterfaceService;
 
 @Service
-public class StatusService implements InterfaceService {
+public class StatusService implements InterfaceService<Status> {
+
+	public static final String statusSetFailMessage = "Status non aggiornato:\n"
+			+ "Impossibile cambiare lo stato dell'oggetto\n";
 
 	@Autowired
 	StatusRepository statusRepository;
-	
-	@Autowired
-	StatusService statusService;
 
-// Metodi Controller
-
-	public List<StatusDto> getAllStatusesAsDtoList() {
-		List<StatusDto> listDishDto = new ArrayList<>();
-		statusRepository.findAll().forEach(e -> listDishDto.add(fromDaoToDto(e)));
-		return listDishDto;
+	@Override
+	public List<Status> getAllEntityAsList() throws LocalException {
+		List<Status> listStatus = statusRepository.findAll();
+		if (!listStatus.isEmpty())
+			return listStatus;
+		throw new LocalException(getAllFailMessage);
 	}
 
-	public StatusDto getStatusAsDto(Integer id) {
-		StatusDto statusDto = new StatusDto();
-		if (isExistingId(id))
-			statusRepository.findById(id).ifPresent(e -> statusDto.setAll(e.getId(), e.getStatus()));
-		return statusDto;
+	@Override
+	public Status getEntity(Integer id) throws LocalException {
+		Status status = new Status();
+		if (isValidId(id)) {
+			statusRepository.findById(id).ifPresent(e -> {
+				status.setId(e.getId());
+				status.setStatus(e.getStatus());
+			});
+			return status;
+		}
+		throw new LocalException(getFailMessage);
 	}
 
-	public StatusDto saveStatus(StatusDto statusDto) {
-		return fromDaoToDto(statusRepository.save(fromDtoToDao(statusDto)));
-	}
-
-	public Boolean deleteStatus(Integer id) {
-		if (isExistingId(id)) {
+	@Override
+	public Boolean deleteEntity(Integer id) throws LocalException {
+		if (isValidId(id)) {
 			statusRepository.deleteById(id);
 			return true;
 		}
-		return false;
+		throw new LocalException(deleteFailMessage);
 	}
 
-// Metodi di supporto
-
-	StatusDto fromDaoToDto(Status status) {
-		StatusDto dto = new StatusDto();
-		dto.setAll(status.getId(), status.getStatus());
-		return dto;
+	@Override
+	public Boolean deleteAllEntity() throws LocalException {
+		List<Status> listStatus = getAllEntityAsList();
+		for (Status status : listStatus) {
+			if (deleteEntity(status.getId()))
+				throw new LocalException(deleteAllFailMessage);
+		}
+		return true;
 	}
 
-	Status fromDtoToDao(StatusDto statusDto) {
-		Status dao;
-		dao = setAllDaoParams(statusDto.getId(), statusDto.getStatus());
-		return dao;
+	@Override
+	public Status saveEntity(Status status) throws LocalException {
+		Status s = statusRepository.save(status);
+		if (s != null)
+			return s;
+		throw new LocalException(setFailMessage);
 	}
 
-	Status setAllDaoParams(Integer id, String status) {
-		Status dao = new Status();
-		if (isPositiveId(id))
-			dao.setId(id);
-		else
-			dao.setId(0);
-		dao.setStatus(status);
-		return dao;
+	@Override
+	public List<Status> saveEntityList(List<Status> listStatus) throws LocalException {
+		if (listStatus.isEmpty())
+			throw new LocalException(deleteFailMessage);
+		List<Status> list = new ArrayList<>();
+		for (Status status : listStatus) {
+			list.add(saveEntity(status));
+		}
+		return list;
 	}
 
-	Integer getIdFromStatus(Status status) {
-		return status.getId();
-	}
-
-	Status getStatusFromId(Integer id) {
-		return fromDtoToDao(getStatusAsDto(id));
-	}
-
-	public Boolean isExistingId(Integer id) {
-		if (id != null && statusRepository.existsById(id))
+	@Override
+	public Boolean isValidId(Integer id) throws LocalException {
+		if (isPositiveId(id) & statusRepository.existsById(id))
 			return true;
 		return false;
 	}

@@ -12,7 +12,7 @@ public class DiningTableDto implements InterfaceDto {
 
 	private Integer id;
 	private Integer size;
-	private Integer status;
+	private Integer idStatus;
 
 	public DiningTableDto() {
 		super();
@@ -51,16 +51,16 @@ public class DiningTableDto implements InterfaceDto {
 		}
 	}
 
-	public Integer getStatus() {
-		return status;
+	public Integer getIdStatus() {
+		return idStatus;
 	}
 
-	public void setStatus(Integer status) {
+	public void setIdStatus(Integer status) {
 		try {
 			if (isValidInteger(status))
-				this.status = status;
+				this.idStatus = status;
 		} catch (LocalException e) {
-			this.status = defaultStatus;
+			this.idStatus = defaultStatus;
 			e.setMessage(setFailMessage);
 			e.getMessage();
 			e.getStackTrace();
@@ -75,7 +75,7 @@ public class DiningTableDto implements InterfaceDto {
 	public void setAll(Integer id, Integer size, Integer status) {
 		setId(id);
 		setSize(size);
-		setStatus(status);
+		setIdStatus(status);
 	}
 
 }

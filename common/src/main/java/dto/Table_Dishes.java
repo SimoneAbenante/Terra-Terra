@@ -6,6 +6,7 @@ import java.util.List;
 import dto.inter.InterfaceDto;
 import exception.LocalException;
 
+@Deprecated
 public class Table_Dishes implements InterfaceDto {
 
 	/**
@@ -43,7 +44,15 @@ public class Table_Dishes implements InterfaceDto {
 	}
 
 	public void setDishes(List<Integer> dishes) {
-		this.dishes = dishes;
+		try {
+			if (isValidList(dishes))
+				this.dishes = dishes;
+		} catch (LocalException ex) {
+			this.dishes = defaultList;
+			ex.setMessage(setFailMessage);
+			ex.getMessage();
+			ex.getStackTrace();
+		}
 	}
 
 	@Override

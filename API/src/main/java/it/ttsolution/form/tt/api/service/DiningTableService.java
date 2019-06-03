@@ -6,115 +6,114 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dto.DiningTableDto;
-import it.ttsolution.form.tt.api.dao.DiningTable;
+import exception.LocalException;
+import it.ttsolution.form.tt.api.entity.DiningTable;
 import it.ttsolution.form.tt.api.repository.DiningTableRepository;
 import it.ttsolution.form.tt.api.service.interfaces.InterfaceService;
 
+import static it.ttsolution.form.tt.api.service.StatusService.statusSetFailMessage;
+
 @Service
-public class DiningTableService implements InterfaceService {
+public class DiningTableService implements InterfaceService<DiningTable> {
 
 	@Autowired
 	DiningTableRepository diningTableRepository;
-	
+
 	@Autowired
 	DiningTableService diningTableService;
 	@Autowired
 	StatusService statusService;
 
-// Metodi Controller
-
-	public List<DiningTableDto> getAllDiningTablesAsDtoList() {
-		List<DiningTableDto> listTableDto = new ArrayList<>();
-		diningTableRepository.findAll().forEach(e -> listTableDto.add(fromDaoToDto(e)));
-		return listTableDto;
+	@Override
+	public List<DiningTable> getAllEntityAsList() throws LocalException {
+		List<DiningTable> listDiningTable = diningTableRepository.findAll();
+		if (!listDiningTable.isEmpty())
+			return listDiningTable;
+		throw new LocalException(getAllFailMessage);
 	}
 
-	public DiningTableDto getDiningTableAsDto(Integer id) {
-		DiningTableDto diningTableDto = new DiningTableDto();
-		if (isExistingId(id))
-			diningTableRepository.findById(id).ifPresent(
-					e -> diningTableDto.setAll(e.getId(), e.getSize(), statusService.getIdFromStatus(e.getStatus())));
-		return diningTableDto;
+	@Override
+	public DiningTable getEntity(Integer id) throws LocalException {
+		DiningTable diningTable = new DiningTable();
+		if (isValidId(id)) {
+			diningTableRepository.findById(id).ifPresent(e -> {
+				diningTable.setId(e.getId());
+				diningTable.setSize(e.getSize());
+				diningTable.setStatus(e.getStatus());
+			});
+			return diningTable;
+		}
+		throw new LocalException(getFailMessage);
 	}
 
-	public Boolean deleteDiningTable(Integer id) {
-		if (isExistingId(id)) {
+	@Override
+	public Boolean deleteEntity(Integer id) throws LocalException {
+		if (isValidId(id)) {
 			diningTableRepository.deleteById(id);
 			return true;
 		}
-		return false;
+		throw new LocalException(deleteFailMessage);
 	}
 
-	public DiningTableDto saveDiningTable(DiningTableDto diningTableDto) {
-		return fromDaoToDto(diningTableRepository.save(fromDtoToDao(diningTableDto)));
-	}
-
-	public Boolean setStatusOfDiningTable(Integer idTable, Integer idStatus) {
-		if (isExistingId(idTable) & statusService.isExistingId(idStatus)) {
-			DiningTableDto table;
-			table = getDiningTableAsDto(idTable);
-			table = setStatus(table, idStatus);
-			diningTableRepository.save(fromDtoToDao(table));
-			return true;
+	@Override
+	public Boolean deleteAllEntity() throws LocalException {
+		List<DiningTable> listDiningTable = getAllEntityAsList();
+		for (DiningTable bill : listDiningTable) {
+			if (!deleteEntity(bill.getId()))
+				throw new LocalException(deleteAllFailMessage);
 		}
+		return true;
+	}
+
+	@Override
+	public DiningTable saveEntity(DiningTable diningTable) throws LocalException {
+		DiningTable dd = diningTableRepository.save(diningTable);
+		if (dd != null)
+			return dd;
+		throw new LocalException(setFailMessage);
+	}
+
+	@Override
+	public List<DiningTable> saveEntityList(List<DiningTable> listDiningTable) throws LocalException {
+		if (listDiningTable.isEmpty())
+			throw new LocalException(deleteFailMessage);
+		List<DiningTable> list = new ArrayList<>();
+		for (DiningTable diningTable : listDiningTable) {
+			list.add(saveEntity(diningTable));
+		}
+		return list;
+	}
+
+	@Override
+	public Boolean isValidId(Integer id) throws LocalException {
+		if (isPositiveId(id) & diningTableRepository.existsById(id))
+			return true;
 		return false;
 	}
 
-	public Boolean setStatusOfAllDiningTables(Integer idStatus) {
-		if (statusService.isExistingId(idStatus)) {
-			List<DiningTableDto> list = getAllDiningTablesAsDtoList();
-			for (DiningTableDto table : list) {
-				setStatusOfDiningTable(table.getId(), idStatus);
+//Gestione dello status per i tavoli
+
+	public DiningTable setStatusOfDiningTable(Integer idTable, Integer idStatus) throws LocalException {
+		if (isValidId(idTable) & statusService.isValidId(idStatus)) {
+			DiningTable diningTable;
+			diningTable = getEntity(idTable);
+			diningTable.setStatus(statusService.getEntity(idStatus));
+			return saveEntity(diningTable);
+		}
+		throw new LocalException(statusSetFailMessage);
+	}
+
+	public List<DiningTable> setStatusOfAllDiningTables(Integer idStatus) throws LocalException {
+		if (statusService.isValidId(idStatus)) {
+			List<DiningTable> listDiningTable = getAllEntityAsList();
+			List<DiningTable> list = new ArrayList<>();
+			for (DiningTable diningTable : listDiningTable) {
+				diningTable.setStatus(statusService.getEntity(idStatus));
+				list.add(saveEntity(diningTable));
 			}
-			return true;
+			return list;
 		}
-		return false;
-	}
-
-// Metodi di supporto
-
-	DiningTableDto fromDaoToDto(DiningTable table) {
-		DiningTableDto dto = new DiningTableDto();
-		dto.setAll(table.getId(), table.getSize(), statusService.getIdFromStatus(table.getStatus()));
-		return dto;
-	}
-
-	DiningTable fromDtoToDao(DiningTableDto tableDto) {
-		DiningTable dao;
-		dao = setAllDaoParams(tableDto.getId(), tableDto.getSize(), tableDto.getStatus());
-		return dao;
-	}
-
-	DiningTable setAllDaoParams(Integer id, Integer size, Integer idStatus) {
-		DiningTable dao = new DiningTable();
-		if (isPositiveId(id))
-			dao.setId(id);
-		else
-			dao.setId(0);
-		dao.setSize(size);
-		dao.setStatus(statusService.getStatusFromId(idStatus));
-		return dao;
-	}
-
-	Integer getIdFromDiningTable(DiningTable table) {
-		return table.getId();
-	}
-
-	DiningTable getDiningTableFromId(Integer id) {
-		return fromDtoToDao(getDiningTableAsDto(id));
-	}
-
-	public Boolean isExistingId(Integer id) {
-		if (id != null && diningTableRepository.existsById(id))
-			return true;
-		return false;
-	}
-
-	private DiningTableDto setStatus(DiningTableDto dto, Integer idStatus) {
-		if (statusService.isExistingId(idStatus))
-			dto.setStatus(idStatus);
-		return dto;
+		throw new LocalException(statusSetFailMessage);
 	}
 
 }

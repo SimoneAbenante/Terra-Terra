@@ -1,6 +1,8 @@
 package dto.inter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import exception.LocalException;
 
@@ -11,6 +13,7 @@ public interface InterfaceDto extends Serializable {
 	public static final Integer defaultStatus = 3;
 	public static final Integer defaultSize = 2;
 	public static final Double defaultDouble = 0.0;
+	public static final List<Integer> defaultList = new ArrayList<>();
 
 	public static final String setFailMessage = "Set fallito per i valoti rrichiesti:\n"
 			+ "Valori inizializzati ai loro default";
@@ -20,6 +23,8 @@ public interface InterfaceDto extends Serializable {
 			+ "[valori: qualunque 'String' escluso null]\n";
 	public static final String invalidDouble = "Errato inserimento:\n" + "Double non valido:\n"
 			+ "[valori: 0 - (1.79769313486231570 e + 308)]\n";
+	public static final String invalidList = "Errato inserimento:\n" + "Lista non valida:\n"
+			+ "[valori: qualunque 'List<Integer>' escluso null]\n";
 
 	public Integer getId();
 
@@ -39,6 +44,12 @@ public interface InterfaceDto extends Serializable {
 		if (d != null & d > 0.0)
 			return true;
 		throw new LocalException(invalidDouble);
+	}
+	
+	public default Boolean isValidList(List<Integer> l) throws LocalException {
+		if (l != null)
+			return true;
+		throw new LocalException(invalidList);
 	}
 
 }

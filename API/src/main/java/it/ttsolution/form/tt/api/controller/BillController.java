@@ -3,42 +3,50 @@ package it.ttsolution.form.tt.api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import dto.BillDto;
+import exception.LocalException;
+import it.ttsolution.form.tt.api.controller.interfaces.InterfaceController;
+import it.ttsolution.form.tt.api.converter.BillConverter;
 import it.ttsolution.form.tt.api.service.BillService;
 
 @RequestMapping("/bills")
-@RestController
-public class BillController {
-	
-	@Autowired
-	public BillService billService;
+public class BillController implements InterfaceController<BillDto> {
 
-	@GetMapping(value = "/", produces = "application/json")
-	public List<BillDto> getAllBill() {
-		return billService.getAllBillsAsDtoList();
+	@Autowired
+	BillService billService;
+	@Autowired
+	BillConverter billConverter;
+
+	@Override
+	public List<BillDto> getAll() throws LocalException {
+		return billConverter.getDtoListFromEntityList(billService.getAllEntityAsList());
 	}
-	
-	@GetMapping(value = "/{id}", produces = "application/json")
-	public BillDto getBillById(@PathVariable Integer id) {
-		return billService.getBillAsDto(id);
+
+	@Override
+	public BillDto getById(Integer id) throws LocalException {
+		return billConverter.getDtoFromEntity(billService.getEntity(id));
 	}
-	
-	@PostMapping(value = "/", produces = "application/json")
-	public BillDto saveBill(@RequestBody BillDto dto) {
-		return billService.saveBill(dto);
+
+	@Override
+	public BillDto save(BillDto dto) throws LocalException {
+		return billConverter.getDtoFromEntity(billService.saveEntity(billConverter.getEntityFromDto(dto)));
 	}
-	
-	@DeleteMapping(value = "/{id}", produces = "application/json")
-	public Boolean deleteBill(@PathVariable Integer id) {
-		return billService.deleteBill(id);
+
+	@Override
+	public List<BillDto> saveAll(List<BillDto> listDto) throws LocalException {
+		return billConverter
+				.getDtoListFromEntityList(billService.saveEntityList(billConverter.getEntityListFromDtoList(listDto)));
 	}
-	
+
+	@Override
+	public Boolean delete(Integer id) throws LocalException {
+		return billService.deleteEntity(id);
+	}
+
+	@Override
+	public Boolean deleteAll() throws LocalException {
+		return billService.deleteAllEntity();
+	}
+
 }

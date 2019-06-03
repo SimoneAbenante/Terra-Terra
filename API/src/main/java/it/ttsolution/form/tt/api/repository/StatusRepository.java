@@ -1,11 +1,10 @@
 package it.ttsolution.form.tt.api.repository;
 
-import java.util.List;
+import it.ttsolution.form.tt.api.entity.Status;
+import it.ttsolution.form.tt.api.repository.interfaces.InterfaceRepository;
 
-import org.springframework.data.repository.CrudRepository;
+public interface StatusRepository extends InterfaceRepository<Status> {
 
-import it.ttsolution.form.tt.api.dao.Status;
-
-public interface StatusRepository extends CrudRepository<Status, Integer> {
-	List<Status> findAll();
+	
+	
 }

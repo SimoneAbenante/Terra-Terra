@@ -1,13 +1,13 @@
 package it.ttsolution.form.tt.api.repository;
 
-import java.util.List;
-
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import it.ttsolution.form.tt.api.dao.Dish;
+import it.ttsolution.form.tt.api.entity.Dish;
+import it.ttsolution.form.tt.api.repository.interfaces.InterfaceRepository;
 
 @Repository
-public interface DishRepository extends CrudRepository<Dish, Integer>{
-	List<Dish> findAll();
+public interface DishRepository extends InterfaceRepository<Dish>{
+	
+	
+	
 }

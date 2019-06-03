@@ -3,54 +3,68 @@ package it.ttsolution.form.tt.api.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import dto.DiningTableDto;
+import exception.LocalException;
+import it.ttsolution.form.tt.api.controller.interfaces.InterfaceController;
+import it.ttsolution.form.tt.api.converter.DiningTableConverter;
 import it.ttsolution.form.tt.api.service.DiningTableService;
 
-
-@RequestMapping("/tables")
 @RestController
-public class DiningTableController {
-	
+@RequestMapping("/tables")
+public class DiningTableController implements InterfaceController<DiningTableDto> {
+
 	@Autowired
-	public DiningTableService diningTableService;
-	
-	@GetMapping(value = "/", produces = "application/json")
-	public List<DiningTableDto> getAllDiningTable() {
-		return diningTableService.getAllDiningTablesAsDtoList();
+	DiningTableService diningTableService;
+	@Autowired
+	DiningTableConverter diningTableConverter;
+
+	@Override
+	public List<DiningTableDto> getAll() throws LocalException {
+		return diningTableConverter.getDtoListFromEntityList(diningTableService.getAllEntityAsList());
 	}
-	
-	@GetMapping(value = "/{id}", produces = "application/json")
-	public DiningTableDto getDiningTableById(@PathVariable Integer id) {
-		return diningTableService.getDiningTableAsDto(id);
+
+	@Override
+	public DiningTableDto getById(Integer id) throws LocalException {
+		return diningTableConverter.getDtoFromEntity(diningTableService.getEntity(id));
 	}
-	
-	@PostMapping(value = "/", produces = "application/json")
-	public DiningTableDto saveDiningTable(@RequestBody DiningTableDto dto) {
-		return diningTableService.saveDiningTable(dto);
+
+	@Override
+	public DiningTableDto save(DiningTableDto dto) throws LocalException {
+		return diningTableConverter
+				.getDtoFromEntity(diningTableService.saveEntity(diningTableConverter.getEntityFromDto(dto)));
 	}
-	
-	@DeleteMapping(value = "/{id}", produces = "application/json")
-	public Boolean deleteDiningTable(@PathVariable Integer id) {
-		return diningTableService.deleteDiningTable(id);
+
+	@Override
+	public List<DiningTableDto> saveAll(List<DiningTableDto> listDto) throws LocalException {
+		return diningTableConverter.getDtoListFromEntityList(
+				diningTableService.saveEntityList(diningTableConverter.getEntityListFromDtoList(listDto)));
 	}
-	
-	@PostMapping(value = "/status", produces = "application/json")
-	public Boolean setAllDiningTableStatus(@RequestParam Integer idStatus) {
-		return diningTableService.setStatusOfAllDiningTables(idStatus); 
+
+	@Override
+	public Boolean delete(Integer id) throws LocalException {
+		return diningTableService.deleteEntity(id);
 	}
-	
-	@PostMapping(value = "/{id}/status/", produces = "application/json")
-	public Boolean setDiningTableStatus(@PathVariable Integer idTable, @RequestParam Integer idStatus) {
-		return diningTableService.setStatusOfDiningTable(idTable, idStatus); 
+
+	@Override
+	public Boolean deleteAll() throws LocalException {
+		return diningTableService.deleteAllEntity();
 	}
-	
+
+	@PostMapping(value = "/status/all", produces = "application/json")
+	public List<DiningTableDto> setAllStatus(@RequestParam Integer idStatus) throws LocalException {
+		return diningTableConverter.getDtoListFromEntityList(diningTableService.setStatusOfAllDiningTables(idStatus));
+	}
+
+	@PostMapping(value = "/status/{idTable}", produces = "application/json")
+	public DiningTableDto setStatus(@PathVariable Integer idTable, @RequestParam Integer idStatus)
+			throws LocalException {
+		return diningTableConverter.getDtoFromEntity(diningTableService.setStatusOfDiningTable(idTable, idStatus));
+	}
+
 }
