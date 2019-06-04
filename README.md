@@ -4,10 +4,10 @@
 
 Sviluppata per finalità didattiche sulle seguenti **tecnologie:**
 
-- **Git** (inserire il progetto sul proprio account github)
 - **Spring** (MVC, Boot, Data, ecc.)
 - **AngularJS** (menu di selezione della vista: gestore, cameriere, cucina, coda comande, statistiche)
 - **MySQL**
+- **Pubnub** per l'aggiornamento real-time dei contenuti
 
 ### Cameriere
 Gli addetti devono avere la possibilità di:
